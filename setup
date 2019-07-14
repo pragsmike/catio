@@ -1,0 +1,13 @@
+set frequency rx 932000000
+set samplerate 10000000
+set bandwidth 28000000
+
+#set lnagain bypass
+set txvga1 -14
+set txvga2 20
+set rxvga1 20
+set rxvga2 20
+
+print frequency
+print samplerate
+print bandwidth

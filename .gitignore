@@ -1,0 +1,5 @@
+*~
+*.swp
+*-
+sigs
+.ipynb_checkpoints

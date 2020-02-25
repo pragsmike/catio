@@ -9,10 +9,11 @@ so managing the ways of hooking them up poses a combinatorial challenge.
 
 This project is investigating how to use CT techniques to
 
-   * understand the connection problem
+   * understand the connection problem (many devices to many programs)
    * explore notations to express flowgraphs
    * use a flowgraph to reason about signal properties
-   * attach configuration data, provenance to flowgraph blocks
+   * transform flowgraphs to different target runtimes
+   * attach configuration data, provenance to flowgraph blocks.
 
    * build open-source diagram management tools
      * interactive editors
@@ -31,7 +32,7 @@ This project is investigating how to use CT techniques to
      * luaradio (lua)
      * pothos (?)
 
-   * Generate signal flowgraphs for these topologies:
+   * Transform signal flowgraphs between these topologies:
      * gnuradio (python)
      * luaradio (lua)
      * ptolemy (xml)
@@ -73,7 +74,8 @@ This project is investigating how to use CT techniques to
 * SDR, Simulation Systems
   
   All these systems use some form of flowgraph to represent
-  the processing of signals.
+  the processing of signals.  We'd like to be able to
+  read these formats, and transform them into one another.
 
 ** [[https://www.gnuradio.org/][gnuradio]] 
    

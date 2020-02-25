@@ -1,0 +1,29 @@
+#+TITLE: SDR Flowgraph codecs
+
+The codecs read flowgraphs from files into an in-memory representation,
+and write that representation to a file.
+
+
+* GRC files are XML
+  
+  The first line is
+  
+#+begin_src xml
+<?grc format='1' created='3.7.11'?>
+#+end_src
+
+  There is no schema referenced in the document.
+  
+   * flow_graph
+   * block
+
+  I haven't seen one that uses hyperedges.
+   
+* ptolemy files are XML
+  
+  These can have hyperedges.  The ptolemy graph editor has
+  a "connection" object, rendered as a diamond, that wires
+  can connect to.
+  
+  In ptolemy, wires have structure.  They have a multiplicity,
+  how many signals they carry in parallel.

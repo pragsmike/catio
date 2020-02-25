@@ -1,0 +1,46 @@
+
+* Device drivers, names, and device wrappers
+
+A radio device, such as an RTL or a RSP, has a name.
+When you start a program that uses a radio, you use
+that device name to tell it which one to use.
+
+The program uses that name to look up a bit of software,
+supplied by the device vendor, that responds to a
+pre-arranged set of commands and turns them into
+commands for that particular device.
+(This is a functor from driver commands to device commands.)
+
+With so many devices, each with its own driver software,
+several people have created a set of adapters, one for each
+device, that translates that device's language to and from
+a single, uniform lingua franca.  However, there is more
+than one such "standard" interface.  Two are UHD, and osmo.
+A third is Soapy, which can compose either UHD or osmo, and
+some other devices besides.
+
+Soapy is therefore the most powerful in the sense that
+if you write your radio-using programs to call on a Soapy
+interface, it will work with lots of radios.
+
+If you think of the driver domain as a category where
+the objects are drivers and the morphisms are "wraps",
+
+A "driver" is a type, together with a functions defined
+to and from that type.
+
+The "hardware" driver is the atom.
+
+If we define a null wrapper, then this is a monoid.
+The monoid unit is that null wrapper, and the monoid
+product is the composition of drivers.
+
+When we want to use such an adapter, we need to specify that
+adapter as the "device".
+The simple name of the hardware radio device is no longer sufficient.
+
+Effectively, we are composing an interface-translation operation
+before the device driver.
+
+You give it a name and a function that turns that name into an
+in-memory device driver.

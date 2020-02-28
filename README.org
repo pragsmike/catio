@@ -84,6 +84,13 @@ This project is investigating how to use CT techniques to
 
 ** pothos
 ** ptolemy
+   
+   Ptolemy stores its flowgraphs in an XML format known as MoML.
+   
+   If you get an error like "Invalid DTD" when you parse a MoML file,
+   you may have to change the DTD directive at the top of the MoML file
+   to have the correct URL -- it must be =https:= not =http:=.
+
 ** [[https://luaradio.io/][luaradio]]
 
    If these could be generated, they could be re-read.
@@ -91,6 +98,30 @@ This project is investigating how to use CT techniques to
    and then use LuaJIT to run it.
 
 
+
+* Codec
+
+  We seek to convert graphs from GnuRadio and Ptolemy into
+  a common format, from whence may be produced other representations
+  such as monmor.
+  
+  The common format is an in-memory representation of the graph
+  as a tree of maps.  We'll call them nodes.  Each node
+  has at least =:name= key.
+  It may have a =:content= key, whose value is a vector of
+  nodes (maps).
+  
+
+| =:name=    | "UDPSource"                           | all     |
+| =:class=   | =ptolemy.kernel.util.StringAttribute= | ptolemy |
+| =:value=   | "text"                                | ptolemy |
+| =:content= | [{...}]                               | ptolemy |
+
+  A node may have a value.  What types does that have in ptolemy models?
+
+  A node may have =:content= whether or not it has a =:value=.
+  Content is an array of nodes.
+  
 
 * Questions
 

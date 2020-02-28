@@ -1,0 +1,742 @@
+{:tag :entity,
+ :attrs
+ {:class "ptolemy.actor.TypedCompositeActor", :name "SoundSpectrum"},
+ :content
+ [{:tag :property,
+   :attrs
+   {:value "11.1.devel",
+    :class "ptolemy.kernel.attributes.VersionAttribute",
+    :name "_createdBy"},
+   :content nil}
+  {:tag :property,
+   :attrs
+   {:class "ptolemy.domains.sdf.kernel.SDFDirector",
+    :name "SDF Director"},
+   :content
+   [{:tag :property,
+     :attrs
+     {:value "0",
+      :class "ptolemy.data.expr.Parameter",
+      :name "iterations"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "1",
+      :class "ptolemy.data.expr.Parameter",
+      :name "vectorizationFactor"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "false",
+      :class "ptolemy.data.expr.Parameter",
+      :name "allowDisconnectedGraphs"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "false",
+      :class "ptolemy.data.expr.Parameter",
+      :name "allowRateChanges"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "70.0, 40.0",
+      :class "ptolemy.kernel.util.Location",
+      :name "_location"},
+     :content nil}]}
+  {:tag :property,
+   :attrs
+   {:value "{bounds={427, 412, 973, 653}, maximized=false}",
+    :class "ptolemy.actor.gui.WindowPropertiesAttribute",
+    :name "_windowProperties"},
+   :content nil}
+  {:tag :property,
+   :attrs
+   {:value "[759, 522]",
+    :class "ptolemy.actor.gui.SizeAttribute",
+    :name "_vergilSize"},
+   :content nil}
+  {:tag :property,
+   :attrs
+   {:class "ptolemy.vergil.kernel.attributes.TextAttribute",
+    :name "Annotation"},
+   :content
+   [{:tag :property,
+     :attrs
+     {:value "true",
+      :class "ptolemy.data.expr.SingletonParameter",
+      :name "_hideName"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "true",
+      :class "ptolemy.data.expr.Parameter",
+      :name "_hideAllParameters"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "14",
+      :class "ptolemy.data.expr.Parameter",
+      :name "textSize"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "{0.0, 0.0, 1.0, 1.0}",
+      :class "ptolemy.actor.gui.ColorAttribute",
+      :name "textColor"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "SansSerif",
+      :class "ptolemy.data.expr.StringParameter",
+      :name "fontFamily"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "false",
+      :class "ptolemy.data.expr.Parameter",
+      :name "bold"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "false",
+      :class "ptolemy.data.expr.Parameter",
+      :name "italic"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value
+      "This model captures audio from the microphone (if there is one)\nand displays both the time-domain signal and a simple spectral estimate\n(a periodogram estimate).",
+      :class "ptolemy.kernel.util.StringAttribute",
+      :name "text"},
+     :content
+     [{:tag :property,
+       :attrs
+       {:class "ptolemy.actor.gui.style.TextStyle", :name "_style"},
+       :content
+       [{:tag :property,
+         :attrs
+         {:value "20",
+          :class "ptolemy.data.expr.Parameter",
+          :name "height"},
+         :content nil}
+        {:tag :property,
+         :attrs
+         {:value "80",
+          :class "ptolemy.data.expr.Parameter",
+          :name "width"},
+         :content nil}]}]}
+    {:tag :property,
+     :attrs
+     {:value "{255.0, 190.0}",
+      :class "ptolemy.kernel.util.Location",
+      :name "_location"},
+     :content nil}]}
+  {:tag :property,
+   :attrs
+   {:class "ptolemy.vergil.kernel.attributes.TextAttribute",
+    :name "Annotation2"},
+   :content
+   [{:tag :property,
+     :attrs
+     {:value "true",
+      :class "ptolemy.data.expr.SingletonParameter",
+      :name "_hideName"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "true",
+      :class "ptolemy.data.expr.Parameter",
+      :name "_hideAllParameters"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "14",
+      :class "ptolemy.data.expr.Parameter",
+      :name "textSize"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "{0.2, 0.2, 0.2, 1.0}",
+      :class "ptolemy.actor.gui.ColorAttribute",
+      :name "textColor"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "SansSerif",
+      :class "ptolemy.data.expr.StringParameter",
+      :name "fontFamily"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "false",
+      :class "ptolemy.data.expr.Parameter",
+      :name "bold"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "false",
+      :class "ptolemy.data.expr.Parameter",
+      :name "italic"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "Author: Edward A. Lee",
+      :class "ptolemy.kernel.util.StringAttribute",
+      :name "text"},
+     :content
+     [{:tag :property,
+       :attrs
+       {:class "ptolemy.actor.gui.style.TextStyle", :name "_style"},
+       :content
+       [{:tag :property,
+         :attrs
+         {:value "20",
+          :class "ptolemy.data.expr.Parameter",
+          :name "height"},
+         :content nil}
+        {:tag :property,
+         :attrs
+         {:value "80",
+          :class "ptolemy.data.expr.Parameter",
+          :name "width"},
+         :content nil}]}]}
+    {:tag :property,
+     :attrs
+     {:value "{5.0, 310.0}",
+      :class "ptolemy.kernel.util.Location",
+      :name "_location"},
+     :content nil}]}
+  {:tag :property,
+   :attrs
+   {:class "ptolemy.vergil.kernel.attributes.TextAttribute",
+    :name "Annotation3"},
+   :content
+   [{:tag :property,
+     :attrs
+     {:value "true",
+      :class "ptolemy.data.expr.SingletonParameter",
+      :name "_hideName"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "true",
+      :class "ptolemy.data.expr.Parameter",
+      :name "_hideAllParameters"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "14",
+      :class "ptolemy.data.expr.Parameter",
+      :name "textSize"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "{0.0, 0.0, 1.0, 1.0}",
+      :class "ptolemy.actor.gui.ColorAttribute",
+      :name "textColor"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "SansSerif",
+      :class "ptolemy.data.expr.StringParameter",
+      :name "fontFamily"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "false",
+      :class "ptolemy.data.expr.Parameter",
+      :name "bold"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "false",
+      :class "ptolemy.data.expr.Parameter",
+      :name "italic"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value
+      "The model of computation is\nsynchronous dataflow (SDF).",
+      :class "ptolemy.kernel.util.StringAttribute",
+      :name "text"},
+     :content
+     [{:tag :property,
+       :attrs
+       {:class "ptolemy.actor.gui.style.TextStyle", :name "_style"},
+       :content
+       [{:tag :property,
+         :attrs
+         {:value "20",
+          :class "ptolemy.data.expr.Parameter",
+          :name "height"},
+         :content nil}
+        {:tag :property,
+         :attrs
+         {:value "80",
+          :class "ptolemy.data.expr.Parameter",
+          :name "width"},
+         :content nil}]}]}
+    {:tag :property,
+     :attrs
+     {:value "{465.0, 15.0}",
+      :class "ptolemy.kernel.util.Location",
+      :name "_location"},
+     :content nil}]}
+  {:tag :property,
+   :attrs
+   {:value "7", :class "ptolemy.data.expr.Parameter", :name "order"},
+   :content
+   [{:tag :property,
+     :attrs
+     {:class "ptolemy.kernel.util.SingletonAttribute",
+      :name "_hideName"},
+     :content nil}
+    {:tag :property,
+     :attrs {:class "ptolemy.vergil.icon.ValueIcon", :name "_icon"},
+     :content
+     [{:tag :property,
+       :attrs
+       {:value "{0.0, 0.0, 1.0, 1.0}",
+        :class "ptolemy.actor.gui.ColorAttribute",
+        :name "_color"},
+       :content nil}]}
+    {:tag :property,
+     :attrs
+     {:class "ptolemy.kernel.util.SingletonConfigurableAttribute",
+      :name "_smallIconDescription"},
+     :content
+     [{:tag :configure,
+       :attrs nil,
+       :content
+       [{:tag :svg,
+         :attrs nil,
+         :content
+         [{:tag :text,
+           :attrs
+           {:y "20",
+            :style "font-size:14; font-family:SansSerif; fill:blue",
+            :x "20"},
+           :content ["-P-"]}]}]}]}
+    {:tag :property,
+     :attrs
+     {:class "ptolemy.vergil.toolbox.VisibleParameterEditorFactory",
+      :name "_editorFactory"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "[150.0, 35.0]",
+      :class "ptolemy.kernel.util.Location",
+      :name "_location"},
+     :content nil}]}
+  {:tag :property,
+   :attrs
+   {:value "1.0",
+    :class "ptolemy.data.expr.ExpertParameter",
+    :name "_vergilZoomFactor"},
+   :content nil}
+  {:tag :property,
+   :attrs
+   {:value "{379.5, 261.0}",
+    :class "ptolemy.data.expr.ExpertParameter",
+    :name "_vergilCenter"},
+   :content nil}
+  {:tag :entity,
+   :attrs
+   {:class "ptolemy.actor.lib.javasound.AudioCapture",
+    :name "AudioCapture"},
+   :content
+   [{:tag :property,
+     :attrs
+     {:value "8000",
+      :class "ptolemy.actor.parameters.SharedParameter",
+      :name "sampleRate"},
+     :content
+     [{:tag :property,
+       :attrs
+       {:class "ptolemy.actor.gui.style.ChoiceStyle", :name "style"},
+       :content
+       [{:tag :property,
+         :attrs
+         {:value "8000",
+          :class "ptolemy.kernel.util.StringAttribute",
+          :name "8000"},
+         :content nil}
+        {:tag :property,
+         :attrs
+         {:value "11025",
+          :class "ptolemy.kernel.util.StringAttribute",
+          :name "11025"},
+         :content nil}
+        {:tag :property,
+         :attrs
+         {:value "22050",
+          :class "ptolemy.kernel.util.StringAttribute",
+          :name "22050"},
+         :content nil}
+        {:tag :property,
+         :attrs
+         {:value "44100",
+          :class "ptolemy.kernel.util.StringAttribute",
+          :name "44100"},
+         :content nil}
+        {:tag :property,
+         :attrs
+         {:value "48000",
+          :class "ptolemy.kernel.util.StringAttribute",
+          :name "48000"},
+         :content nil}]}]}
+    {:tag :property,
+     :attrs
+     {:value "16",
+      :class "ptolemy.actor.parameters.SharedParameter",
+      :name "bitsPerSample"},
+     :content
+     [{:tag :property,
+       :attrs
+       {:class "ptolemy.actor.gui.style.ChoiceStyle", :name "style"},
+       :content
+       [{:tag :property,
+         :attrs
+         {:value "8",
+          :class "ptolemy.kernel.util.StringAttribute",
+          :name "8"},
+         :content nil}
+        {:tag :property,
+         :attrs
+         {:value "16",
+          :class "ptolemy.kernel.util.StringAttribute",
+          :name "16"},
+         :content nil}]}]}
+    {:tag :property,
+     :attrs
+     {:value "1",
+      :class "ptolemy.actor.parameters.SharedParameter",
+      :name "channels"},
+     :content
+     [{:tag :property,
+       :attrs
+       {:class "ptolemy.actor.gui.style.ChoiceStyle", :name "style"},
+       :content
+       [{:tag :property,
+         :attrs
+         {:value "1",
+          :class "ptolemy.kernel.util.StringAttribute",
+          :name "1"},
+         :content nil}
+        {:tag :property,
+         :attrs
+         {:value "2",
+          :class "ptolemy.kernel.util.StringAttribute",
+          :name "2"},
+         :content nil}]}]}
+    {:tag :property,
+     :attrs
+     {:value "500",
+      :class "ptolemy.actor.parameters.SharedParameter",
+      :name "transferSize"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "50.0, 125.0",
+      :class "ptolemy.kernel.util.Location",
+      :name "_location"},
+     :content nil}]}
+  {:tag :entity,
+   :attrs {:class "ptolemy.domains.sdf.lib.Chop", :name "Chop"},
+   :content
+   [{:tag :property,
+     :attrs
+     {:value "500",
+      :class "ptolemy.data.expr.Parameter",
+      :name "numberToRead"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "2^order",
+      :class "ptolemy.data.expr.Parameter",
+      :name "numberToWrite"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "155.0, 125.0",
+      :class "ptolemy.kernel.util.Location",
+      :name "_location"},
+     :content nil}]}
+  {:tag :entity,
+   :attrs {:class "ptolemy.domains.sdf.lib.FFT", :name "FFT"},
+   :content
+   [{:tag :property,
+     :attrs
+     {:value "order",
+      :class "ptolemy.data.expr.Parameter",
+      :name "order"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "[370.0, 140.0]",
+      :class "ptolemy.kernel.util.Location",
+      :name "_location"},
+     :content nil}]}
+  {:tag :entity,
+   :attrs
+   {:class "ptolemy.actor.lib.AbsoluteValue", :name "AbsoluteValue"},
+   :content
+   [{:tag :property,
+     :attrs
+     {:value "[455.0, 140.0]",
+      :class "ptolemy.kernel.util.Location",
+      :name "_location"},
+     :content nil}]}
+  {:tag :entity,
+   :attrs
+   {:class "ptolemy.domains.sdf.lib.SequenceToArray",
+    :name "SequenceToArray"},
+   :content
+   [{:tag :property,
+     :attrs
+     {:value "2^order",
+      :class "ptolemy.actor.parameters.PortParameter",
+      :name "arrayLength"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "[545.0, 150.0]",
+      :class "ptolemy.kernel.util.Location",
+      :name "_location"},
+     :content nil}]}
+  {:tag :entity,
+   :attrs
+   {:class "ptolemy.actor.lib.MultiplyDivide",
+    :name "MultiplyDivide"},
+   :content
+   [{:tag :property,
+     :attrs
+     {:value "[275.0, 140.0]",
+      :class "ptolemy.kernel.util.Location",
+      :name "_location"},
+     :content nil}]}
+  {:tag :entity,
+   :attrs {:class "ptolemy.actor.lib.Pulse", :name "Pulse"},
+   :content
+   [{:tag :property,
+     :attrs
+     {:value "{1.0, -1.0}",
+      :class "ptolemy.data.expr.Parameter",
+      :name "values"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "true",
+      :class "ptolemy.data.expr.Parameter",
+      :name "repeat"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "0",
+      :class "ptolemy.data.expr.Parameter",
+      :name "firingCountLimit"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "185.0, 280.0",
+      :class "ptolemy.kernel.util.Location",
+      :name "_location"},
+     :content nil}]}
+  {:tag :entity,
+   :attrs
+   {:class "ptolemy.actor.lib.gui.ArrayPlotter",
+    :name "ArrayPlotter"},
+   :content
+   [{:tag :property,
+     :attrs
+     {:value "false",
+      :class "ptolemy.data.expr.Parameter",
+      :name "fillOnWrapup"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "{bounds={67, 378, 500, 353}, maximized=false}",
+      :class "ptolemy.actor.gui.WindowPropertiesAttribute",
+      :name "_windowProperties"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "[500, 300]",
+      :class "ptolemy.actor.gui.SizeAttribute",
+      :name "_plotSize"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "0",
+      :class "ptolemy.data.expr.Parameter",
+      :name "startingDataset"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "0.0",
+      :class "ptolemy.data.expr.Parameter",
+      :name "xInit"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "1.0",
+      :class "ptolemy.data.expr.Parameter",
+      :name "xUnit"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "375.0, 65.0",
+      :class "ptolemy.kernel.util.Location",
+      :name "_location"},
+     :content nil}
+    {:tag :configure, :attrs nil, :content nil}]}
+  {:tag :entity,
+   :attrs
+   {:class "ptolemy.domains.sdf.lib.SequenceToArray",
+    :name "SequenceToArray2"},
+   :content
+   [{:tag :property,
+     :attrs
+     {:value "2^order",
+      :class "ptolemy.actor.parameters.PortParameter",
+      :name "arrayLength"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "255.0, 65.0",
+      :class "ptolemy.kernel.util.Location",
+      :name "_location"},
+     :content nil}]}
+  {:tag :entity,
+   :attrs
+   {:class "ptolemy.actor.lib.gui.ArrayPlotter",
+    :name "ArrayPlotter2"},
+   :content
+   [{:tag :property,
+     :attrs
+     {:value "false",
+      :class "ptolemy.data.expr.Parameter",
+      :name "fillOnWrapup"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "{bounds={508, 378, 500, 353}, maximized=false}",
+      :class "ptolemy.actor.gui.WindowPropertiesAttribute",
+      :name "_windowProperties"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "[500, 300]",
+      :class "ptolemy.actor.gui.SizeAttribute",
+      :name "_plotSize"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "0",
+      :class "ptolemy.data.expr.Parameter",
+      :name "startingDataset"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "-4000.0",
+      :class "ptolemy.data.expr.Parameter",
+      :name "xInit"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "8000.0/128.0",
+      :class "ptolemy.data.expr.Parameter",
+      :name "xUnit"},
+     :content nil}
+    {:tag :property,
+     :attrs
+     {:value "[670.0, 150.0]",
+      :class "ptolemy.kernel.util.Location",
+      :name "_location"},
+     :content nil}
+    {:tag :configure, :attrs nil, :content nil}]}
+  {:tag :relation,
+   :attrs
+   {:class "ptolemy.actor.TypedIORelation", :name "relation3"},
+   :content nil}
+  {:tag :relation,
+   :attrs
+   {:class "ptolemy.actor.TypedIORelation", :name "relation4"},
+   :content nil}
+  {:tag :relation,
+   :attrs
+   {:class "ptolemy.actor.TypedIORelation", :name "relation8"},
+   :content
+   [{:tag :vertex,
+     :attrs {:value "215.0, 125.0", :name "vertex1"},
+     :content nil}]}
+  {:tag :relation,
+   :attrs {:class "ptolemy.actor.TypedIORelation", :name "relation"},
+   :content nil}
+  {:tag :relation,
+   :attrs
+   {:class "ptolemy.actor.TypedIORelation", :name "relation2"},
+   :content nil}
+  {:tag :relation,
+   :attrs
+   {:class "ptolemy.actor.TypedIORelation", :name "relation6"},
+   :content nil}
+  {:tag :relation,
+   :attrs
+   {:class "ptolemy.actor.TypedIORelation", :name "relation9"},
+   :content nil}
+  {:tag :relation,
+   :attrs
+   {:class "ptolemy.actor.TypedIORelation", :name "relation5"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation", :port "AudioCapture.output"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation", :port "Chop.input"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation8", :port "Chop.output"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation6", :port "FFT.input"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation3", :port "FFT.output"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation3", :port "AbsoluteValue.input"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation4", :port "AbsoluteValue.output"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation4", :port "SequenceToArray.input"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation9", :port "SequenceToArray.output"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation8", :port "MultiplyDivide.multiply"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation5", :port "MultiplyDivide.multiply"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation6", :port "MultiplyDivide.output"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation5", :port "Pulse.output"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation2", :port "ArrayPlotter.input"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation8", :port "SequenceToArray2.input"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation2", :port "SequenceToArray2.output"},
+   :content nil}
+  {:tag :link,
+   :attrs {:relation "relation9", :port "ArrayPlotter2.input"},
+   :content nil}]}

@@ -1,0 +1,64 @@
+[[https://github.com/osmocom/gr-osmosdr/releases][gr-osmosdr]] already supports SDRPlay (built on ealier [[https://www.sdrplay.com/community/viewtopic.php?t=2881][work to add SDRPlay support
+to gr-osmosdr]]).
+
+There appears to be another driver at SDRPlay [[https://www.sdrplay.com/docs/gr-sdrplay-workflow.pdf][gr-sdrplay workflow]] ?
+
+This means that any program that works with the osmosdr API 
+will work with the SDRPlay RSP radios.
+
+Does osmo work with gnuradio 3.8 yet?
+
+[[https://hackaday.com/2015/11/12/your-first-gnu-radio-receiver-with-sdrplay/][Your First GnuRadio Receiver with SDRPlay]]
+
+[[http://www.abclinuxu.cz/blog/jenda/2019/11/gnu-radio-first-steps-a-fm-receiver][FM Receiver in GnuRadio, step by step]]
+
+[[https://osmocom.org/projects/sdr/wiki/fosphor][GnuRadio Fosphor spectrum display]]
+
+
+I've installed [[https://www.gnuradio.org/news/2020-02-16-gnu-radio-v3-8-1-0-rc1-release-candidate/][GnuRadio 3.8.1.0-RC1]].
+
+#+begin_src sh
+  sudo add-apt-repository ppa:gnuradio/gnuradio-releases
+  sudo apt install gnuradio
+  sudo apt install gr-fosphor gr-osmosdr qtbase5-dev libqwt-qt5-dev swig
+#+end_src
+
+#+begin_src sh
+  cd ~/Downloads
+  wget https://github.com/Kitware/CMake/releases/download/v3.16.4/cmake-3.16.4-Linux-x86_64.tar.gz
+  mkdir ~/.local
+  cd ~/.local
+  tar --strip-components=1 -x -f  ~/Downloads/cmake-3.16.4-Linux-x86_64.tar.gz
+  echo 'export MANPATH=~/.local/man:' >> ~/.bashrc
+  echo 'export PATH=~/.local/bin:$PATH' >> ~/.bashrc
+#+end_src
+
+#+begin_src sh
+  sudo ldconfig
+  sudo ln -s /usr/lib/x86_64-linux-gnu/liborc-0.4.so.0  /usr/lib/x86_64-linux-gnu/liborc-0.4.so
+  git clone https://github.com/osmocom/gr-osmosdr.git
+  cd gr-osmosdr && mkdir build && cd build && cmake ..
+#+end_src
+
+#+begin_src sh
+  git clone https://gitlab.com/HB9FXQ/gr-sdrplay.git
+  cd gr-sdrplay && mkdir build && cd build && cmake ..
+  make && sudo make install && sudo ldconfig
+#+end_src
+
+* Problem log
+  
+The instructions above should avoid these problems, but if they
+recur, here's what worked before.
+
+#+begin_src sh
+~/gr-osmosdr$ mkdir build && cd build && cmake ..
+CMake Error at CMakeLists.txt:23 (cmake_minimum_required):
+  CMake 3.13 or higher is required.  You are running version 3.10.2
+#+end_src
+
+https://cmake.org/download/
+
+[[https://github.com/Kitware/CMake/releases/download/v3.16.4/cmake-3.16.4-Linux-x86_64.tar.gz][cmake-3.16.4-Linux-x86_64.tar.gz]]
+
+

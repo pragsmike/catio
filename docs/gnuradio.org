@@ -1,12 +1,14 @@
-[[https://github.com/osmocom/gr-osmosdr/releases][gr-osmosdr]] already supports SDRPlay (built on ealier [[https://www.sdrplay.com/community/viewtopic.php?t=2881][work to add SDRPlay support
-to gr-osmosdr]]).
+These are my notes from wiring up gnuradio to SDRPlay RSPduo.
 
-There appears to be another driver at SDRPlay [[https://www.sdrplay.com/docs/gr-sdrplay-workflow.pdf][gr-sdrplay workflow]] ?
+[[https://github.com/osmocom/gr-osmosdr/releases][gr-osmosdr]] already supports SDRPlay (built on ealier [[https://www.sdrplay.com/community/viewtopic.php?t=2881][work to add SDRPlay support
+to gr-osmosdr]]?).
 
 This means that any program that works with the osmosdr API 
 will work with the SDRPlay RSP radios.
 
 Does osmo work with gnuradio 3.8 yet?
+
+There appears to be another driver at SDRPlay [[https://www.sdrplay.com/docs/gr-sdrplay-workflow.pdf][gr-sdrplay workflow]].
 
 [[https://hackaday.com/2015/11/12/your-first-gnu-radio-receiver-with-sdrplay/][Your First GnuRadio Receiver with SDRPlay]]
 
@@ -17,22 +19,36 @@ Does osmo work with gnuradio 3.8 yet?
 
 I've installed [[https://www.gnuradio.org/news/2020-02-16-gnu-radio-v3-8-1-0-rc1-release-candidate/][GnuRadio 3.8.1.0-RC1]].
 
+When possible, I put things in =~/.local= to avoid needing root.
+This sets that up.
 #+begin_src sh
-  sudo add-apt-repository ppa:gnuradio/gnuradio-releases
-  sudo apt install gnuradio
-  sudo apt install gr-fosphor gr-osmosdr qtbase5-dev libqwt-qt5-dev swig
-#+end_src
-
-#+begin_src sh
-  cd ~/Downloads
-  wget https://github.com/Kitware/CMake/releases/download/v3.16.4/cmake-3.16.4-Linux-x86_64.tar.gz
-  mkdir ~/.local
-  cd ~/.local
-  tar --strip-components=1 -x -f  ~/Downloads/cmake-3.16.4-Linux-x86_64.tar.gz
+  mkdir -p ~/.local
   echo 'export MANPATH=~/.local/man:' >> ~/.bashrc
   echo 'export PATH=~/.local/bin:$PATH' >> ~/.bashrc
 #+end_src
 
+This is how to get GnuRadio 3.8, at the moment.
+#+begin_src sh
+  sudo add-apt-repository ppa:gnuradio/gnuradio-releases
+  sudo apt update
+  sudo apt upgrade -y
+#+end_src
+
+#+begin_src sh
+  sudo apt install -y gnuradio
+  sudo apt install -y gr-fosphor gr-osmosdr qtbase5-dev libqwt-qt5-dev swig
+#+end_src
+
+=osmosdr= requires CMake 3.13 or higher, so go put it in =~/.local=.
+#+begin_src sh
+  cd ~/Downloads
+  wget https://github.com/Kitware/CMake/releases/download/v3.16.4/cmake-3.16.4-Linux-x86_64.tar.gz
+  cd ~/.local
+  tar --strip-components=1 -x -f  ~/Downloads/cmake-3.16.4-Linux-x86_64.tar.gz
+#+end_src
+
+For some reason, the Optimized Inner Loop Runtime Code didn't get symlinked
+correctly, even after =ldconfig= ran.
 #+begin_src sh
   sudo ldconfig
   sudo ln -s /usr/lib/x86_64-linux-gnu/liborc-0.4.so.0  /usr/lib/x86_64-linux-gnu/liborc-0.4.so
@@ -46,10 +62,52 @@ I've installed [[https://www.gnuradio.org/news/2020-02-16-gnu-radio-v3-8-1-0-rc1
   make && sudo make install && sudo ldconfig
 #+end_src
 
+* PyBOMBS
+
+  https://github.com/gnuradio/gnuradio
+  
+#+begin_src sh
+  sudo apt install python3-pip
+  sudo -H pip3 install PyBOMBS
+  pybombs auto-config
+  pybombs recipes add-defaults
+  pybombs prefix init ~/gnuradio -R gnuradio-default
+
+  pybombs install gr-osmosdr
+#+end_src
+
+#+begin_src sh
+PyBOMBS.ConfigManager - INFO - Prefix Python version is: 3.6.9
+PyBOMBS - INFO - PyBOMBS Version 2.3.3
+PyBOMBS.auto-config - INFO - Using config file: None
+#+end_src
+
+Edit =~/gnuradio/setup_env.sh=:
+   * add to PYTHONPATH =~/gnuradio/lib/python3/dist-packages=
+   * Change 2.6 to 3.6 in PYTHONPATH
+
+
+
+
+On Ubuntu, apparently
+| /usr/lib/python3/dist-packages         | things installed by dpkg/apt |
+| /usr/local/lib/python3.6/dist-packages | things installed using pip   |
+
+
+
 * Problem log
   
 The instructions above should avoid these problems, but if they
 recur, here's what worked before.
+
+** pybombs setup_env.sh had wrong values
+
+
+Edit =~/gnuradio/setup_env.sh=:
+   * add to PYTHONPATH =~/gnuradio/lib/python3/dist-packages=
+   * Change 2.6 to 3.6 in PYTHONPATH
+
+** CMake 3.13 or higher is required
 
 #+begin_src sh
 ~/gr-osmosdr$ mkdir build && cd build && cmake ..
@@ -61,4 +119,5 @@ https://cmake.org/download/
 
 [[https://github.com/Kitware/CMake/releases/download/v3.16.4/cmake-3.16.4-Linux-x86_64.tar.gz][cmake-3.16.4-Linux-x86_64.tar.gz]]
 
+** osmosdr python package gets installed in python3, not python2
 

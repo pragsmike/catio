@@ -33,7 +33,7 @@
 
 (defn valspec->val [attrs]                  ; :name :class :value
   (case (:class attrs)
-   "ptolemy.data.expr.SingletonParameter" [(keywordize (:name attrs))
+    "ptolemy.data.expr.SingletonParameter" [(keywordize (:name attrs))
                                             (read-string (:value attrs))]
     "ptolemy.data.expr.Parameter" [(keywordize (:name attrs))
                                    (read-string (:value attrs))]
@@ -45,7 +45,13 @@
   )
 
 (defn pt-property [moml]
-  (valspec->val (:attrs moml))
+  (let [val (valspec->val (:attrs moml))]
+    (if (empty? (:content moml))
+      val
+      {(keywordize (:name (:attrs moml)))
+       (reduce merge
+               {  }
+               (map pt-property (:content moml)))}))
   )
 
 (defn pt-element [moml]

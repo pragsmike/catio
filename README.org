@@ -122,6 +122,8 @@ This project is investigating how to use CT techniques to
   A node may have =:content= whether or not it has a =:value=.
   Content is an array of nodes.
   
+  In ptolemy, some elements such as =StringAttribute=, can have
+  properties, such as =_style=, as content.
 
 * Questions
 

@@ -1,0 +1,29 @@
+body { margin: 10px;}
+
+.indicator {
+    padding-left: .5em;
+    width: 5em;
+    height: 1.2em;
+}
+
+.heading {
+    background: #eeeeee;
+    padding-left: 0.5em;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+.title {
+    font-weight: bold;
+    font-size: 20pt;
+    display: inline;
+    margin-right: 20px;
+}
+
+.heading > a {
+    font-size: 10pt;
+    vertical-align: super;
+}
+
+.button {
+    background: "green";
+}

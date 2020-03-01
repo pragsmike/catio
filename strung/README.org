@@ -1,0 +1,154 @@
+#+TITLE: Strung: String Diagram UI in Clojure reagent
+
+Exploring techniques for building string diagram viewers and editors,
+using ClojureScript.
+
+* To run:
+
+#+begin_src sh
+lein fig:build
+#+end_src
+
+* Current state of this project
+  
+Currently, this "app" has examples of how to do 2D drawing,
+and how to do 3D drawing.  These are meant as examples to
+take code from.
+
+The app has three parts:
+     
+   * The Sierpinski demo from [[http://timothypratley.blogspot.com/2017/01/reagent-deep-dive-part-2-lifecycle-of.html][Reagent Deep Dive part 2]].
+
+   * A simulation control, so a user can start, stop, single-step, and inspect
+     an active simulation.
+
+   * Utilities for working with proof URLs from [[https://homotopy.io][homotopy.io]].
+
+It's a ClojureScript project using these tools:
+   * lein
+   * figwheel-main
+   * reagent
+   * Three.js
+
+* Example: homotopy.io
+  
+[[https://homotopy.io/][homotopy.io]] is interesting for a couple of reasons:
+   * it draws the proofs as 2D and even 3D shapes quite well
+   * it encodes the proofs as parameters in URLs
+
+Here's an example of the URL of a proof with just a 0-cell in it.
+
+#+begin_src
+https://homotopy.io/#$proof=eJx9kU1uxCAMha9SuVsWk8w//21bqIaJR5BInoWVgZIjaKsrdC8mQUTddsOD5+XvGjNATNiA3AsgG1uRBngVo29B3HVztg2NqamTGH5BVtREjtCBH+HL86W+oKF1qA7KYBHjdWQwDr+I2ihgCqj4rp2maLqIqMqfR2DFeQdrBmEhwAyfmcgvIHYW1ZvSjdGP3QSpoZ7PCFIdmYpClAOuCbrXCZPA5u1yyy3t2mg1k4IGSus0TdWSJMb577dtFJzU6ULNkzZRd9hfZtl//w+1yweI3jwgsZ81SAeIBzwyFylTNJgGe12Z7L92hrnRp8imrReJqRh4z8bz06tkDKWVe6pBynGGPnL45eeINEPGbiveuP5XW2nLLF3e5bXHJ63fUmnrAu4zL9AiKEvAw=
+#+end_src
+
+I don't remember exactly how that gets decoded, the code in hio.cljs is
+not complete.  Look in hio_test.cljs and the test resource files.
+My best recollection is:
+
+homotopy.io encodes the proof as base64 of a zlib-compressed JSON string.
+
+The operations we'd like to have:
+   * Extract the proof JSON from a given base64 string.
+   * Given a proof JSON return the base64 string.
+
+Keeping the session data in the URL has these advantages:
+   * it's easy to share
+   * no other storage needed, server or client side
+
+Disadvantages:     
+   * URLs get clumsily large
+   * there are size limits on URLs
+     
+
+* Other tools
+
+** Statebox
+
+** [[https://tikzit.github.io/][Tikzit]]
+
+** Ptolemy
+
+   [[https://ptolemy.berkeley.edu/ptolemyII/ptII11.0/index.htm][PtolemyII]]
+
+   [[https://github.com/icyphy/ptII][ptolemy github]]
+
+** gnuradio
+
+** catlab Julia
+
+   [[https://www.youtube.com/watch?v=7dmrDYQh4rc][Realizing Applied Category Theory in Julia]]
+
+* Questions
+
+  What objects are these visualizations rendering?
+  They are proofs.  How are these represented?
+  A sequence of logical formulas?
+  How should we store these?
+
+  Is there a conventional format for representing them?
+  StateBox monmor seems to be such a format.
+
+  What do mathematicians think of Mathematica?
+
+* References
+  
+[[https://en.wikipedia.org/wiki/String_diagram][String Diagram]] on wikipedia
+
+[[https://arxiv.org/pdf/1908.10660.pdf][Foundations of brick diagrams]]
+We discuss the foundations of 2-dimensional graphical languages, with a
+view towards their computer implementation in a ‘compiler’for monoidal
+categories. In particular, we discuss the close relationship between
+string diagrams, pasting diagrams, linear logic proof trees and k-d
+trees, the last being a data structure from computational geometry and
+computer graphics that recursively partitions a space. We introduce a
+minor variant of cubical pasting diagrams, which we call ‘brick
+diagrams’, which are used in the State-box visual programming language.
+This paper is intended as a discussion and literature review, and
+contains little mathematics.
+
+[[https://arxiv.org/pdf/0908.3347.pdf][A Survey of Graphical Languages for Monoidal Categories]]
+
+[[https://arxiv.org/pdf/1906.05937.pdf][A Complete Language for Faceted Dataflow Programs]]
+
+[[http://www.zanasi.com/fabio/files/paperCALCO19b.pdf][CARTOGRAPHER: a tool for string diagrammatic reasoning]]
+A tool for editing and rewriting string diagrams of symmetric
+monoidal categories. See also the [[http://cartographer.id/][Cartographer]] project.
+Defines Open Hypergraphs.
+
+#+begin_quote
+To put this into context, compare cartographer to two “competing” tools:
+[[https://arxiv.org/abs/1503.01034][Quantomatic]] [17] and [[https://ncatlab.org/nlab/show/Globular][Globular]] [2] (or its more recent descendant,
+[[https://homotopy.io][homotopy.io]]). In a sense, cartographer sits between them: providing a
+more general setting than Quantomatic, 54 while at the same time being
+more focussed than Globular.
+
+... in the front end, we use an algorithm for the layout of these
+directed acyclic open hypergraphs which behaves well under rewriting
+and deformation of diagrams.
+#+end_quote
+
+[[https://homotopy.io/][homotopy.io]]
+
+[[https://arxiv.org/pdf/1401.7220.pdf][Category Theory using String Diagrams]]
+
+[[http://timothypratley.blogspot.com/2017/01/reagent-deep-dive-part-2-lifecycle-of.html][Reagent Deep Dive part 2]]
+
+[[https://github.com/jackrusher/gespensterfelder/blob/master/src/gespensterfelder.cljs][Generative 3d]]
+
+[[https://github.com/nodeca/pako][nodeca/pako]] zlib decompressor
+
+[[https://github.com/DougHamil/threeagent][threeagent]]
+
+[[https://www.youtube.com/watch?v=7dmrDYQh4rc][Realizing Applied Category Theory in Julia]]
+
+[[https://github.com/negrinho/sane_tikz][sane_tikz]] generates Tikz code from a nicer textual description of a diagram.
+It's python code, but it uses some interesting patterns.
+
+[[http://www.philipzucker.com/categorical-combinators-for-graphviz-in-python/][Categorical Combinators for GraphViz in Python]]
+
+[[https://github.com/statebox/monmor-spec/blob/master/README.md][Exchange format for morphisms in Monoidal Categories]]
+
+[[https://arxiv.org/pdf/1710.03894.pdf][Universal Constructions For (Co)Relations: Categories, Monoidal Categories, And Props]]
+
+[[https://gojs.net/latest/index.html][GoJS]] library to build drawing editors (and modeling tools)

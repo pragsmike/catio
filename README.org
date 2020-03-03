@@ -12,6 +12,7 @@ This project is investigating how to use CT techniques to
    * understand the connection problem (many devices to many programs)
    * explore notations to express flowgraphs
    * use a flowgraph to reason about signal properties
+   * transform flowgraphs to equivalent but more efficient flowgraphs
    * transform flowgraphs to different target runtimes
    * attach configuration data, provenance to flowgraph blocks.
 
@@ -143,6 +144,8 @@ That could help interpret the parameter values.
 
 What is QSpectrum Analyzer?
 
+What are Stream Rings, and are they useful here?
+
 * References
   
 [[http://www.abclinuxu.cz/blog/jenda/2019/11/gnu-radio-first-steps-a-fm-receiver][FM Receiver in GnuRadio, step by step]]
@@ -192,3 +195,22 @@ How about a ClojureScript to LuaJIT compiler?
    that process streams of signal samples, when they encounter
    a specially-marked sample placed there by an earlier stage
    in the flow graph.
+
+* Todos
+
+** TODO Parse GRC YAML format, new in GR 3.8
+
+* Examples
+
+Signal Domains are data types.
+Most of them are streams.
+
+You can subscribe to a stream.
+
+   * IQ Samples
+   * Baseband audio samples
+   * Decoded baudot RTTY characters
+   * Decoded morse code characters
+   * ADS-B message stream
+
+Example: IQ-Samples -> ADS-B messages

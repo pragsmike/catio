@@ -1,4 +1,4 @@
-(ns codec.core
+(ns codec.gr-xml
   (:require [clojure.xml :as xml]))
 
 

@@ -1,10 +1,14 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Top Block
-# Generated: Fri Oct 27 20:05:22 2017
-##################################################
+# GNU Radio version: 3.8.1.0
+
+from distutils.version import StrictVersion
 
 if __name__ == '__main__':
     import ctypes
@@ -14,25 +18,25 @@ if __name__ == '__main__':
             x11 = ctypes.cdll.LoadLibrary('libX11.so')
             x11.XInitThreads()
         except:
-            print "Warning: failed to XInitThreads()"
+            print("Warning: failed to XInitThreads()")
 
-from PyQt4 import Qt
+from PyQt5 import Qt
+from gnuradio import qtgui
+from gnuradio.filter import firdes
+import sip
 from gnuradio import analog
 from gnuradio import audio
-from gnuradio import eng_notation
 from gnuradio import filter
 from gnuradio import gr
-from gnuradio import qtgui
-from gnuradio.eng_option import eng_option
-from gnuradio.filter import firdes
-from gnuradio.qtgui import Range, RangeWidget
-from optparse import OptionParser
-import osmosdr
-import sip
 import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
+from gnuradio.qtgui import Range, RangeWidget
+import osmosdr
 import time
 from gnuradio import qtgui
-
 
 class top_block(gr.top_block, Qt.QWidget):
 
@@ -58,7 +62,14 @@ class top_block(gr.top_block, Qt.QWidget):
         self.top_layout.addLayout(self.top_grid_layout)
 
         self.settings = Qt.QSettings("GNU Radio", "top_block")
-        self.restoreGeometry(self.settings.value("geometry").toByteArray())
+
+        try:
+            if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
+                self.restoreGeometry(self.settings.value("geometry").toByteArray())
+            else:
+                self.restoreGeometry(self.settings.value("geometry"))
+        except:
+            pass
 
         ##################################################
         # Variables
@@ -99,27 +110,23 @@ class top_block(gr.top_block, Qt.QWidget):
         self.nb_grid_layout_3 = Qt.QGridLayout()
         self.nb_layout_3.addLayout(self.nb_grid_layout_3)
         self.nb.addTab(self.nb_widget_3, 'Subcarrier')
-        self.top_layout.addWidget(self.nb)
+        self.top_grid_layout.addWidget(self.nb)
         self._gain_range = Range(0, 75, 1, 20, 200)
         self._gain_win = RangeWidget(self._gain_range, self.set_gain, 'gain', "counter_slider", float)
-        self.top_layout.addWidget(self._gain_win)
+        self.top_grid_layout.addWidget(self._gain_win)
         self.qtgui_waterfall_sink_x_1_0 = qtgui.waterfall_sink_c(
-        	1024, #size
-        	firdes.WIN_BLACKMAN_hARRIS, #wintype
-        	0, #fc
-        	baseband_rate, #bw
-        	"", #name
-                1 #number of inputs
+            1024, #size
+            firdes.WIN_BLACKMAN_hARRIS, #wintype
+            0, #fc
+            baseband_rate, #bw
+            "", #name
+            1 #number of inputs
         )
         self.qtgui_waterfall_sink_x_1_0.set_update_time(0.10)
         self.qtgui_waterfall_sink_x_1_0.enable_grid(False)
         self.qtgui_waterfall_sink_x_1_0.enable_axis_labels(True)
 
-        if not True:
-          self.qtgui_waterfall_sink_x_1_0.disable_legend()
 
-        if "complex" == "float" or "complex" == "msg_float":
-          self.qtgui_waterfall_sink_x_1_0.set_plot_pos_half(not True)
 
         labels = ['', '', '', '', '',
                   '', '', '', '', '']
@@ -127,7 +134,8 @@ class top_block(gr.top_block, Qt.QWidget):
                   0, 0, 0, 0, 0]
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
                   1.0, 1.0, 1.0, 1.0, 1.0]
-        for i in xrange(1):
+
+        for i in range(1):
             if len(labels[i]) == 0:
                 self.qtgui_waterfall_sink_x_1_0.set_line_label(i, "Data {0}".format(i))
             else:
@@ -140,22 +148,19 @@ class top_block(gr.top_block, Qt.QWidget):
         self._qtgui_waterfall_sink_x_1_0_win = sip.wrapinstance(self.qtgui_waterfall_sink_x_1_0.pyqwidget(), Qt.QWidget)
         self.nb_layout_3.addWidget(self._qtgui_waterfall_sink_x_1_0_win)
         self.qtgui_waterfall_sink_x_1 = qtgui.waterfall_sink_f(
-        	1024, #size
-        	firdes.WIN_BLACKMAN_hARRIS, #wintype
-        	0, #fc
-        	samp_rate, #bw
-        	"", #name
-                1 #number of inputs
+            1024, #size
+            firdes.WIN_BLACKMAN_hARRIS, #wintype
+            0, #fc
+            samp_rate, #bw
+            "", #name
+            1 #number of inputs
         )
         self.qtgui_waterfall_sink_x_1.set_update_time(0.10)
         self.qtgui_waterfall_sink_x_1.enable_grid(False)
         self.qtgui_waterfall_sink_x_1.enable_axis_labels(True)
 
-        if not True:
-          self.qtgui_waterfall_sink_x_1.disable_legend()
 
-        if "float" == "float" or "float" == "msg_float":
-          self.qtgui_waterfall_sink_x_1.set_plot_pos_half(not True)
+        self.qtgui_waterfall_sink_x_1.set_plot_pos_half(not True)
 
         labels = ['Demod', '', '', '', '',
                   '', '', '', '', '']
@@ -163,7 +168,8 @@ class top_block(gr.top_block, Qt.QWidget):
                   0, 0, 0, 0, 0]
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
                   1.0, 1.0, 1.0, 1.0, 1.0]
-        for i in xrange(1):
+
+        for i in range(1):
             if len(labels[i]) == 0:
                 self.qtgui_waterfall_sink_x_1.set_line_label(i, "Data {0}".format(i))
             else:
@@ -176,22 +182,18 @@ class top_block(gr.top_block, Qt.QWidget):
         self._qtgui_waterfall_sink_x_1_win = sip.wrapinstance(self.qtgui_waterfall_sink_x_1.pyqwidget(), Qt.QWidget)
         self.nb_layout_1.addWidget(self._qtgui_waterfall_sink_x_1_win)
         self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_c(
-        	1024, #size
-        	firdes.WIN_BLACKMAN_hARRIS, #wintype
-        	0, #fc
-        	samp_rate, #bw
-        	"", #name
-                1 #number of inputs
+            1024, #size
+            firdes.WIN_BLACKMAN_hARRIS, #wintype
+            0, #fc
+            samp_rate, #bw
+            "", #name
+            1 #number of inputs
         )
         self.qtgui_waterfall_sink_x_0.set_update_time(0.10)
         self.qtgui_waterfall_sink_x_0.enable_grid(False)
         self.qtgui_waterfall_sink_x_0.enable_axis_labels(True)
 
-        if not True:
-          self.qtgui_waterfall_sink_x_0.disable_legend()
 
-        if "complex" == "float" or "complex" == "msg_float":
-          self.qtgui_waterfall_sink_x_0.set_plot_pos_half(not True)
 
         labels = ['', '', '', '', '',
                   '', '', '', '', '']
@@ -199,7 +201,8 @@ class top_block(gr.top_block, Qt.QWidget):
                   0, 0, 0, 0, 0]
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
                   1.0, 1.0, 1.0, 1.0, 1.0]
-        for i in xrange(1):
+
+        for i in range(1):
             if len(labels[i]) == 0:
                 self.qtgui_waterfall_sink_x_0.set_line_label(i, "Data {0}".format(i))
             else:
@@ -212,12 +215,12 @@ class top_block(gr.top_block, Qt.QWidget):
         self._qtgui_waterfall_sink_x_0_win = sip.wrapinstance(self.qtgui_waterfall_sink_x_0.pyqwidget(), Qt.QWidget)
         self.nb_layout_0.addWidget(self._qtgui_waterfall_sink_x_0_win)
         self.qtgui_freq_sink_x_1 = qtgui.freq_sink_f(
-        	1024, #size
-        	firdes.WIN_BLACKMAN_hARRIS, #wintype
-        	0, #fc
-        	samp_rate, #bw
-        	"", #name
-        	1 #number of inputs
+            1024, #size
+            firdes.WIN_BLACKMAN_hARRIS, #wintype
+            0, #fc
+            samp_rate, #bw
+            "", #name
+            1
         )
         self.qtgui_freq_sink_x_1.set_update_time(0.10)
         self.qtgui_freq_sink_x_1.set_y_axis(-140, 10)
@@ -229,21 +232,19 @@ class top_block(gr.top_block, Qt.QWidget):
         self.qtgui_freq_sink_x_1.enable_axis_labels(True)
         self.qtgui_freq_sink_x_1.enable_control_panel(False)
 
-        if not True:
-          self.qtgui_freq_sink_x_1.disable_legend()
 
-        if "float" == "float" or "float" == "msg_float":
-          self.qtgui_freq_sink_x_1.set_plot_pos_half(not True)
+        self.qtgui_freq_sink_x_1.set_plot_pos_half(not True)
 
         labels = ['', '', '', '', '',
-                  '', '', '', '', '']
+            '', '', '', '', '']
         widths = [1, 1, 1, 1, 1,
-                  1, 1, 1, 1, 1]
+            1, 1, 1, 1, 1]
         colors = ["blue", "red", "green", "black", "cyan",
-                  "magenta", "yellow", "dark red", "dark green", "dark blue"]
+            "magenta", "yellow", "dark red", "dark green", "dark blue"]
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
-                  1.0, 1.0, 1.0, 1.0, 1.0]
-        for i in xrange(1):
+            1.0, 1.0, 1.0, 1.0, 1.0]
+
+        for i in range(1):
             if len(labels[i]) == 0:
                 self.qtgui_freq_sink_x_1.set_line_label(i, "Data {0}".format(i))
             else:
@@ -255,12 +256,12 @@ class top_block(gr.top_block, Qt.QWidget):
         self._qtgui_freq_sink_x_1_win = sip.wrapinstance(self.qtgui_freq_sink_x_1.pyqwidget(), Qt.QWidget)
         self.nb_layout_2.addWidget(self._qtgui_freq_sink_x_1_win)
         self.qtgui_freq_sink_x_0 = qtgui.freq_sink_f(
-        	1024, #size
-        	firdes.WIN_BLACKMAN_hARRIS, #wintype
-        	0, #fc
-        	baseband_rate, #bw
-        	"", #name
-        	1 #number of inputs
+            1024, #size
+            firdes.WIN_BLACKMAN_hARRIS, #wintype
+            0, #fc
+            baseband_rate, #bw
+            "", #name
+            1
         )
         self.qtgui_freq_sink_x_0.set_update_time(0.10)
         self.qtgui_freq_sink_x_0.set_y_axis(-140, 10)
@@ -272,21 +273,19 @@ class top_block(gr.top_block, Qt.QWidget):
         self.qtgui_freq_sink_x_0.enable_axis_labels(True)
         self.qtgui_freq_sink_x_0.enable_control_panel(False)
 
-        if not True:
-          self.qtgui_freq_sink_x_0.disable_legend()
 
-        if "float" == "float" or "float" == "msg_float":
-          self.qtgui_freq_sink_x_0.set_plot_pos_half(not True)
+        self.qtgui_freq_sink_x_0.set_plot_pos_half(not True)
 
         labels = ['', '', '', '', '',
-                  '', '', '', '', '']
+            '', '', '', '', '']
         widths = [1, 1, 1, 1, 1,
-                  1, 1, 1, 1, 1]
+            1, 1, 1, 1, 1]
         colors = ["blue", "red", "green", "black", "cyan",
-                  "magenta", "yellow", "dark red", "dark green", "dark blue"]
+            "magenta", "yellow", "dark red", "dark green", "dark blue"]
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
-                  1.0, 1.0, 1.0, 1.0, 1.0]
-        for i in xrange(1):
+            1.0, 1.0, 1.0, 1.0, 1.0]
+
+        for i in range(1):
             if len(labels[i]) == 0:
                 self.qtgui_freq_sink_x_0.set_line_label(i, "Data {0}".format(i))
             else:
@@ -297,25 +296,24 @@ class top_block(gr.top_block, Qt.QWidget):
 
         self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
         self.nb_layout_1.addWidget(self._qtgui_freq_sink_x_0_win)
-        self.osmosdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + '' )
+        self.osmosdr_source_0 = osmosdr.source(
+            args="numchan=" + str(1) + " " + ''
+        )
+        self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(samp_rate)
         self.osmosdr_source_0.set_center_freq(freq_tune, 0)
         self.osmosdr_source_0.set_freq_corr(0, 0)
-        self.osmosdr_source_0.set_dc_offset_mode(2, 0)
-        self.osmosdr_source_0.set_iq_balance_mode(2, 0)
-        self.osmosdr_source_0.set_gain_mode(True, 0)
         self.osmosdr_source_0.set_gain(10, 0)
         self.osmosdr_source_0.set_if_gain(20, 0)
         self.osmosdr_source_0.set_bb_gain(20, 0)
         self.osmosdr_source_0.set_antenna('', 0)
         self.osmosdr_source_0.set_bandwidth(0, 0)
-
-        self.freq_xlating_fir_filter_xxx_1 = filter.freq_xlating_fir_filter_fcc(audio_decim, (firdes.low_pass(2500.0,baseband_rate,3e3,2e3,firdes.WIN_HAMMING)), 67e3, baseband_rate)
-        self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(1, (firdes.low_pass(1, samp_rate, xlate_bandwidth, 100000)), freq_offset, samp_rate)
+        self.freq_xlating_fir_filter_xxx_1 = filter.freq_xlating_fir_filter_fcc(audio_decim, firdes.low_pass(2500.0,baseband_rate,3e3,2e3,firdes.WIN_HAMMING), 67e3, baseband_rate)
+        self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(1, firdes.low_pass(1, samp_rate, xlate_bandwidth, 100000), freq_offset, samp_rate)
         self._freq_range = Range(88.5e6, 108e6, 200e3, 90.9e6, 200)
         self._freq_win = RangeWidget(self._freq_range, self.set_freq, 'freq', "counter_slider", float)
-        self.top_layout.addWidget(self._freq_win)
-        self.fir_filter_xxx_1 = filter.fir_filter_fff(audio_decim, (firdes.low_pass(1.0,baseband_rate,13e3,3e3,firdes.WIN_HAMMING)))
+        self.top_grid_layout.addWidget(self._freq_win)
+        self.fir_filter_xxx_1 = filter.fir_filter_fff(audio_decim, firdes.low_pass(1.0,baseband_rate,13e3,3e3,firdes.WIN_HAMMING))
         self.fir_filter_xxx_1.declare_sample_delay(0)
         self.audio_sink_0 = audio.sink(audio_rate, '', True)
         self.analog_wfm_rcv_0 = analog.wfm_rcv(
@@ -331,6 +329,8 @@ class top_block(gr.top_block, Qt.QWidget):
         	gain=1.0,
         	tau=75e-6,
         )
+
+
 
         ##################################################
         # Connections
@@ -358,11 +358,11 @@ class top_block(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.set_baseband_rate(self.samp_rate/self.bb_decim)
-        self.qtgui_waterfall_sink_x_1.set_frequency_range(0, self.samp_rate)
-        self.qtgui_waterfall_sink_x_0.set_frequency_range(0, self.samp_rate)
-        self.qtgui_freq_sink_x_1.set_frequency_range(0, self.samp_rate)
+        self.freq_xlating_fir_filter_xxx_0.set_taps(firdes.low_pass(1, self.samp_rate, self.xlate_bandwidth, 100000))
         self.osmosdr_source_0.set_sample_rate(self.samp_rate)
-        self.freq_xlating_fir_filter_xxx_0.set_taps((firdes.low_pass(1, self.samp_rate, self.xlate_bandwidth, 100000)))
+        self.qtgui_freq_sink_x_1.set_frequency_range(0, self.samp_rate)
+        self.qtgui_waterfall_sink_x_0.set_frequency_range(0, self.samp_rate)
+        self.qtgui_waterfall_sink_x_1.set_frequency_range(0, self.samp_rate)
 
     def get_bb_decim(self):
         return self.bb_decim
@@ -392,10 +392,10 @@ class top_block(gr.top_block, Qt.QWidget):
     def set_baseband_rate(self, baseband_rate):
         self.baseband_rate = baseband_rate
         self.set_audio_decim_rate(self.baseband_rate/self.audio_decim)
-        self.qtgui_waterfall_sink_x_1_0.set_frequency_range(0, self.baseband_rate)
+        self.fir_filter_xxx_1.set_taps(firdes.low_pass(1.0,self.baseband_rate,13e3,3e3,firdes.WIN_HAMMING))
+        self.freq_xlating_fir_filter_xxx_1.set_taps(firdes.low_pass(2500.0,self.baseband_rate,3e3,2e3,firdes.WIN_HAMMING))
         self.qtgui_freq_sink_x_0.set_frequency_range(0, self.baseband_rate)
-        self.freq_xlating_fir_filter_xxx_1.set_taps((firdes.low_pass(2500.0,self.baseband_rate,3e3,2e3,firdes.WIN_HAMMING)))
-        self.fir_filter_xxx_1.set_taps((firdes.low_pass(1.0,self.baseband_rate,13e3,3e3,firdes.WIN_HAMMING)))
+        self.qtgui_waterfall_sink_x_1_0.set_frequency_range(0, self.baseband_rate)
 
     def get_audio_decim(self):
         return self.audio_decim
@@ -409,7 +409,7 @@ class top_block(gr.top_block, Qt.QWidget):
 
     def set_xlate_bandwidth(self, xlate_bandwidth):
         self.xlate_bandwidth = xlate_bandwidth
-        self.freq_xlating_fir_filter_xxx_0.set_taps((firdes.low_pass(1, self.samp_rate, self.xlate_bandwidth, 100000)))
+        self.freq_xlating_fir_filter_xxx_0.set_taps(firdes.low_pass(1, self.samp_rate, self.xlate_bandwidth, 100000))
 
     def get_gain(self):
         return self.gain
@@ -437,10 +437,10 @@ class top_block(gr.top_block, Qt.QWidget):
         self.audio_decim_rate = audio_decim_rate
 
 
+
 def main(top_block_cls=top_block, options=None):
 
-    from distutils.version import StrictVersion
-    if StrictVersion(Qt.qVersion()) >= StrictVersion("4.5.0"):
+    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')
         Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
@@ -449,10 +449,20 @@ def main(top_block_cls=top_block, options=None):
     tb.start()
     tb.show()
 
+    def sig_handler(sig=None, frame=None):
+        Qt.QApplication.quit()
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
+    timer = Qt.QTimer()
+    timer.start(500)
+    timer.timeout.connect(lambda: None)
+
     def quitting():
         tb.stop()
         tb.wait()
-    qapp.connect(qapp, Qt.SIGNAL("aboutToQuit()"), quitting)
+    qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
 
 

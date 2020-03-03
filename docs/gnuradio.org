@@ -1,3 +1,9 @@
+#+TITLE: GnuRadio
+
+
+
+* SDRPlay
+  
 These are my notes from wiring up gnuradio to SDRPlay RSPduo.
 
 [[https://github.com/osmocom/gr-osmosdr/releases][gr-osmosdr]] already supports SDRPlay (built on ealier [[https://www.sdrplay.com/community/viewtopic.php?t=2881][work to add SDRPlay support
@@ -93,7 +99,253 @@ On Ubuntu, apparently
 | /usr/lib/python3/dist-packages         | things installed by dpkg/apt |
 | /usr/local/lib/python3.6/dist-packages | things installed using pip   |
 
+* [[https://www.nooelec.com/store/sdr/sdr-receivers/nesdr-smart-sdr.html][NooElec NESDR Smart v4]]
+  
+  Finally, a radio that works that has a working driver (osmosdr) on Ubuntu!
+  
+  gqrx heard WAMU 88.5 FM! 
+  
+  [[https://www.nooelec.com/store/downloads/dl/file/id/72/product/0/nesdr_installation_manual_for_ubuntu.pdf][Manual here.]]
 
+  #+begin_src sh
+    $ lsusb
+    Bus 003 Device 004: ID 0bda:2838 Realtek Semiconductor Corp. RTL2838 DVB-T
+
+    $ lsmod |grep dvb
+    dvb_usb_rtl28xxu       40960  0
+    dvb_usb_v2             45056  1 dvb_usb_rtl28xxu
+    dvb_core              131072  2 dvb_usb_v2,rtl2832
+    rc_core                53248  2 dvb_usb_v2,dvb_usb_rtl28xxu
+    mc                     53248  6 videodev,dvb_usb_v2,videobuf2_v4l2,uvcvideo,dvb_core,videobuf2_common
+  #+end_src
+  Sure enough, it thinks it's a DVB-T device.
+
+  #+begin_src sh
+        cat > /etc/modprobe.d/blacklist-dvb.conf << EOF
+        blacklist dvb_usb_rtl28xxu  
+        EOF
+        sudo apt-get install rtl-sdr 
+  #+end_src
+
+** Start-up log
+  When I plugged the device into the usb port, this appeared:
+#+begin_src sh
+Mar  2 17:20:41 thick kernel: [12306.892842] usb 3-1: new high-speed USB device number 4 using xhci_hcd
+Mar  2 17:20:42 thick kernel: [12307.052975] usb 3-1: New USB device found, idVendor=0bda, idProduct=2838, bcdDevice= 1.00
+Mar  2 17:20:42 thick kernel: [12307.052979] usb 3-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+Mar  2 17:20:42 thick kernel: [12307.052981] usb 3-1: Product: RTL2838UHIDIR
+Mar  2 17:20:42 thick kernel: [12307.052983] usb 3-1: Manufacturer: Realtek
+Mar  2 17:20:42 thick kernel: [12307.052985] usb 3-1: SerialNumber: 00000001
+Mar  2 17:20:42 thick mtp-probe: checking bus 3, device 4: "/sys/devices/pci0000:00/0000:00:14.0/usb3/3-1"
+Mar  2 17:20:42 thick mtp-probe: bus: 3, device: 4 was not an MTP device
+Mar  2 17:20:42 thick kernel: [12307.103154] usb 3-1: dvb_usb_v2: found a 'Realtek RTL2832U reference design' in warm state
+Mar  2 17:20:42 thick kernel: [12307.158112] usb 3-1: dvb_usb_v2: will pass the complete MPEG2 transport stream to the software demuxer
+Mar  2 17:20:42 thick kernel: [12307.158121] dvbdev: DVB: registering new adapter (Realtek RTL2832U reference design)
+Mar  2 17:20:42 thick kernel: [12307.158125] usb 3-1: media controller created
+Mar  2 17:20:42 thick kernel: [12307.158450] dvbdev: dvb_create_media_entity: media entity 'dvb-demux' registered.
+Mar  2 17:20:42 thick kernel: [12307.164560] i2c i2c-23: Added multiplexed i2c bus 24
+Mar  2 17:20:42 thick kernel: [12307.164562] rtl2832 23-0010: Realtek RTL2832 successfully attached
+Mar  2 17:20:42 thick kernel: [12307.164591] usb 3-1: DVB: registering adapter 0 frontend 0 (Realtek RTL2832 (DVB-T))...
+Mar  2 17:20:42 thick kernel: [12307.164596] dvbdev: dvb_create_media_entity: media entity 'Realtek RTL2832 (DVB-T)' registered.
+Mar  2 17:20:42 thick kernel: [12307.168953] r820t 24-001a: creating new instance
+Mar  2 17:20:42 thick kernel: [12307.175854] r820t 24-001a: Rafael Micro r820t successfully identified
+Mar  2 17:20:42 thick kernel: [12307.181411] rtl2832_sdr rtl2832_sdr.1.auto: Registered as swradio0
+Mar  2 17:20:42 thick kernel: [12307.181414] rtl2832_sdr rtl2832_sdr.1.auto: Realtek RTL2832 SDR attached
+Mar  2 17:20:42 thick kernel: [12307.181416] rtl2832_sdr rtl2832_sdr.1.auto: SDR API is still slightly experimental and functionality changes may follow
+Mar  2 17:20:42 thick kernel: [12307.192792] Registered IR keymap rc-empty
+Mar  2 17:20:42 thick kernel: [12307.192847] rc rc0: Realtek RTL2832U reference design as /devices/pci0000:00/0000:00:14.0/usb3/3-1/rc/rc0
+Mar  2 17:20:42 thick kernel: [12307.192902] input: Realtek RTL2832U reference design as /devices/pci0000:00/0000:00:14.0/usb3/3-1/rc/rc0/input25
+Mar  2 17:20:42 thick kernel: [12307.193071] rc rc0: lirc_dev: driver dvb_usb_rtl28xxu registered at minor = 0, raw IR receiver, no transmitter
+Mar  2 17:20:42 thick kernel: [12307.193148] usb 3-1: dvb_usb_v2: schedule remote query interval to 200 msecs
+Mar  2 17:20:42 thick kernel: [12307.201402] usb 3-1: dvb_usb_v2: 'Realtek RTL2832U reference design' successfully initialized and connected
+Mar  2 17:20:42 thick kernel: [12307.201568] usbcore: registered new interface driver dvb_usb_rtl28xxu
+Mar  2 17:20:42 thick upowerd[1180]: unhandled action 'bind' on /sys/devices/pci0000:00/0000:00:14.0/usb3/3-1
+Mar  2 17:20:42 thick upowerd[1180]: unhandled action 'bind' on /sys/devices/pci0000:00/0000:00:14.0/usb3/3-1/3-1:1.0
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) config/udev: Adding input device Realtek RTL2832U reference design (/dev/input/event24)
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Realtek RTL2832U reference design: Applying InputClass "libinput keyboard catchall"
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) Using input driver 'libinput' for 'Realtek RTL2832U reference design'
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) systemd-logind: got fd for /dev/input/event24 13:88 fd 69 paused 0
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Realtek RTL2832U reference design: always reports core events
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Option "Device" "/dev/input/event24"
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Option "_source" "server/udev"
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) event24 - Realtek RTL2832U reference design: is tagged by udev as: Keyboard Pointingstick
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) event24 - Realtek RTL2832U reference design: trackpoint device set to range 20
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) event24 - Realtek RTL2832U reference design: device is a pointer
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) event24 - Realtek RTL2832U reference design: device is a keyboard
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) event24 - Realtek RTL2832U reference design: device removed
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) libinput: Realtek RTL2832U reference design: needs a virtual subdevice
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Option "config_info" "udev:/sys/devices/pci0000:00/0000:00:14.0/usb3/3-1/rc/rc0/input25/event24"
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) XINPUT: Adding extended input device "Realtek RTL2832U reference design" (type: MOUSE, id 19)
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Option "AccelerationScheme" "none"
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Realtek RTL2832U reference design: (accel) selected scheme none/0
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Realtek RTL2832U reference design: (accel) acceleration factor: 2.000
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Realtek RTL2832U reference design: (accel) acceleration threshold: 4
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) event24 - Realtek RTL2832U reference design: is tagged by udev as: Keyboard Pointingstick
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) event24 - Realtek RTL2832U reference design: trackpoint device set to range 20
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) event24 - Realtek RTL2832U reference design: device is a pointer
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) event24 - Realtek RTL2832U reference design: device is a keyboard
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Realtek RTL2832U reference design: Applying InputClass "libinput keyboard catchall"
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) Using input driver 'libinput' for 'Realtek RTL2832U reference design'
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) systemd-logind: returning pre-existing fd for /dev/input/event24 13:88
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Realtek RTL2832U reference design: always reports core events
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Option "Device" "/dev/input/event24"
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Option "_source" "_driver/libinput"
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) libinput: Realtek RTL2832U reference design: is a virtual subdevice
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Option "config_info" "udev:/sys/devices/pci0000:00/0000:00:14.0/usb3/3-1/rc/rc0/input25/event24"
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (II) XINPUT: Adding extended input device "Realtek RTL2832U reference design" (type: KEYBOARD, id 20)
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Option "xkb_model" "pc105"
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (**) Option "xkb_layout" "us"
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (WW) Option "xkb_variant" requires a string value
+Mar  2 17:20:42 thick /usr/lib/gdm3/gdm-x-session[1543]: (WW) Option "xkb_options" requires a string value
+Mar  2 17:20:44 thick snapd[930]: storehelpers.go:436: cannot refresh: snap has no updates available: "core", "core18", "gnome-3-26-1604", "gnome-3-28-1804", "gnome-calculator", "gnome-characters", "gnome-logs", "gnome-system-monitor", "gtk-common-themes"
+Mar  2 17:20:47 thick colord[1040]: failed to get session [pid 11428]: No data available
+Mar  2 17:20:47 thick colord[1040]: CdMain: failed to read /proc/11428/cmdline
+
+#+end_src
+
+
+* ADS-B
+
+This prints ADS-B messages received over the air.
+#+begin_src sh
+rtl_adsb -V
+#+end_src
+
+#+begin_example
+--------------
+*a549a5d9337df88dddb9a30269ac;
+DF=20 CA=5
+ICAO Address=49a5d9
+PI=0x0269ac
+Type Code=6 S.Type/Ant.=3
+--------------
+*8da445ec58c3859714c3ecbb5893;
+DF=17 CA=5
+ICAO Address=a445ec
+PI=0xbb5893
+Type Code=11 S.Type/Ant.=0
+--------------
+*a8705f07bb87db6c5c945d2ae442;
+DF=21 CA=0
+ICAO Address=705f07
+PI=0x2ae442
+Type Code=23 S.Type/Ant.=3
+--------------
+*8da445cce11c11011020189edc71;
+DF=17 CA=5
+ICAO Address=a445cc
+PI=0x9edc71
+Type Code=28 S.Type/Ant.=1
+--------------
+*cca4426f9986eba2a844883353df;
+DF=25 CA=4
+ICAO Address=a4426f
+PI=0x3353df
+Type Code=19 S.Type/Ant.=1
+--------------
+*cd2bb76d1d0d15a420048ef9c3ef;
+DF=25 CA=5
+ICAO Address=2bb76d
+PI=0xf9c3ef
+Type Code=3 S.Type/Ant.=5
+--------------
+*9da9d665ea495864b93c0ad83cc2;
+DF=19 CA=5
+ICAO Address=a9d665
+PI=0xd83cc2
+Type Code=29 S.Type/Ant.=2
+--------------
+*8daa763f990c750f580488a348bd;
+DF=17 CA=5
+ICAO Address=aa763f
+PI=0xa348bd
+Type Code=19 S.Type/Ant.=1
+--------------
+*8da445ec990d14a470088f1ef553;
+DF=17 CA=5
+ICAO Address=a445ec
+PI=0x1ef553
+Type Code=19 S.Type/Ant.=1
+--------------
+*8da0144a5829357950b339f97261;
+DF=17 CA=5
+ICAO Address=a0144a
+PI=0xf97261
+Type Code=11 S.Type/Ant.=0
+--------------
+*85abb72d990595a438048efbc1ef;
+DF=16 CA=5
+ICAO Address=abb72d
+PI=0xfbc1ef
+Type Code=19 S.Type/Ant.=1
+--------------
+*e9ed5fc9135875453eaadccfaf5e;
+DF=29 CA=1
+ICAO Address=ed5fc9
+PI=0xcfaf5e
+Type Code=2 S.Type/Ant.=3
+--------------
+*8dac426f586fa58c1cb84cf64144;
+DF=17 CA=5
+ICAO Address=ac426f
+PI=0xf64144
+Type Code=11 S.Type/Ant.=0
+--------------
+*8dabb76d58c3857834b8a2ebc08e;
+DF=17 CA=5
+ICAO Address=abb76d
+PI=0xebc08e
+Type Code=11 S.Type/Ant.=0
+--------------
+*8daa769ff8230002004db86c95e0;
+DF=17 CA=5
+ICAO Address=aa769f
+PI=0x6c95e0
+Type Code=31 S.Type/Ant.=0
+--------------
+*c4a64367fc218003006a9c4a6149;
+DF=24 CA=4
+ICAO Address=a64367
+PI=0x4a6149
+Type Code=31 S.Type/Ant.=4
+--------------
+*8da445ec990d14a470048f56af53;
+DF=17 CA=5
+ICAO Address=a445ec
+PI=0x56af53
+Type Code=19 S.Type/Ant.=1
+--------------
+*89271e701ff3b062af1cf98ff37c;
+DF=17 CA=1
+ICAO Address=271e70
+PI=0x8ff37c
+Type Code=3 S.Type/Ant.=7
+--------------
+*cdaa163f8d0c7d8f59d488b948bf;
+DF=25 CA=5
+ICAO Address=aa163f
+PI=0xb948bf
+Type Code=17 S.Type/Ant.=5
+--------------
+*8dabb76d990d15a430048efbc3ef;
+DF=17 CA=5
+ICAO Address=abb76d
+PI=0xfbc3ef
+Type Code=19 S.Type/Ant.=1
+--------------
+*ac009a8f5c9085537ab333eb9869;
+DF=21 CA=4
+ICAO Address=009a8f
+PI=0xeb9869
+Type Code=11 S.Type/Ant.=4
+--------------
+*98bb5b25943eb9babd0c6c5aeb85;
+DF=19 CA=0
+ICAO Address=bb5b25
+PI=0x5aeb85
+Type Code=18 S.Type/Ant.=4
+--------------
+#+end_example
 
 * Problem log
   

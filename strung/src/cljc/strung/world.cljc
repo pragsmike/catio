@@ -36,8 +36,7 @@
   [agent]
   (-> agent
       (update-in [:x] #(+ (:vx agent) %))
-      (update-in [:y] #(+ (:vy agent) %))
-      (update-in [:c] #(+ 10 %))))
+      (update-in [:y] #(+ (:vy agent) %))))
 
 
 (defn constrain

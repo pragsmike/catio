@@ -152,3 +152,9 @@ It's python code, but it uses some interesting patterns.
 [[https://arxiv.org/pdf/1710.03894.pdf][Universal Constructions For (Co)Relations: Categories, Monoidal Categories, And Props]]
 
 [[https://gojs.net/latest/index.html][GoJS]] library to build drawing editors (and modeling tools)
+
+[[https://en.wikipedia.org/wiki/Energy_Systems_Language][Energy Systems Language]], [[https://en.wikipedia.org/wiki/Howard_T._Odum][Odum]]
+Techniques for modeling systems based on energy flow.
+But be careful of generative effects in the model,
+such as the [[https://en.wikipedia.org/wiki/Two_capacitor_paradox][two-capacitor paradox]] that arises in simple
+models that neglect radiation.

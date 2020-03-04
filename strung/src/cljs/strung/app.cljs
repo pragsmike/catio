@@ -2,6 +2,7 @@
   ""
   (:require [cljs.core.async :as a :refer (chan timeout)]
             [reagent.core :as reagent :refer [atom]]
+            [reagent.dom :as rdom]
             [re-frame.core :as rf]
             [strowger.event :as se]
             [strung.three :as three]
@@ -101,7 +102,7 @@
         (if (= me @god)
           (recur me))
         ))
-  (reagent/render-component [calling-component]
-                            (.getElementById js/document "container")))
+  (rdom/render [calling-component]
+               (.getElementById js/document "container")))
 
 (init)

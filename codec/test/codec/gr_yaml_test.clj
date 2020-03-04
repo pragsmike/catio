@@ -1,8 +1,9 @@
-(ns codec.gr-xml-test
+(ns codec.gr-yaml-test
   (:require [clojure.test :refer :all]
-            [codec.gr-xml :refer :all]))
+            [codec.gr-yaml :refer :all]))
 
-(defn sample-grc [name] (clojure.xml/parse "test/two.grc"))
+(defn sample-grc [name] (clj-yaml.core/parse-string
+                         (slurp "test/two-yaml.grc")))
 
 (deftest test-grc-meta
   (let [grc (sample-grc "two")]

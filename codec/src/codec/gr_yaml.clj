@@ -1,5 +1,5 @@
 (ns codec.gr-yaml
-  (:require [clojure.xml :as xml]))
+  (:require [clj-yaml.core :as yaml]))
 
 
 (defn grc-meta [grc]
@@ -49,6 +49,6 @@
   (map grc-block-layout (grc-blocks grc)))
 
 (comment
-  (def grc (clojure.xml/parse "test/two.grc"))
+  (def grc (clojure.yaml/parse-string (slurp "test/two-yaml.grc")))
   )
 

@@ -1,3 +1,5 @@
+[[https://www.rtl-sdr.com/big-list-rtl-sdr-supported-software/][Big List of RTLSDR-supported software]]
+
 [[http://www.abclinuxu.cz/blog/jenda/2019/11/gnu-radio-first-steps-a-fm-receiver][FM Receiver in GnuRadio, step by step]]
 * [[https://cubicsdr.com/?cat=4][CubicSDR]]
   
@@ -47,3 +49,26 @@ Part of [[http://www.pothosware.com/][pothos]].
  and DMA devices. The project also has a diverse set of processing and hardware
  support toolkits.
 
+ 
+* Others
+  
+[[https://batchdrake.github.io/SigDigger/][SigDigger]]
+
+[[https://github.com/kpreid/shinysdr][ShinySDR]]
+
+[[http://www.mike-stirling.com/redmine/projects/webradio][WebRadio]]
+
+WebSDR
+
+[[https://eshail.batc.org.uk/nb/][Qatar-OSCAR 100 Narrowband WebSDR]]
+ This WebSDR, hosted at Goonhilly Earth Station in Cornwall, enables you to listen to the Qatar-OSCAR 100 Narrow band transponder onboard the Es'hail-2 satellite. 
+
+ https://registrationcenter.intel.com/en/products/postregistration/?sn=CD38-RGBTVC4F&EmailID=wa2hee%40outlook.com&Sequence=2653893&dnld=t
+ 
+https://github.com/intel/compute-runtime/blob/master/DISTRIBUTIONS.md
+
+#+begin_src sh
+add-apt-repository ppa:intel-opencl/intel-opencl
+apt-get update
+apt-get install intel-opencl-icd
+#+end_src

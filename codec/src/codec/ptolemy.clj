@@ -54,6 +54,8 @@
                (map pt-property (:content moml)))}))
   )
 
+(def pt-blocks nil)
+
 (defn pt-element [moml]
   (let [attrs (:attrs moml)]
     (case (:tag moml)

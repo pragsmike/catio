@@ -1,5 +1,9 @@
+;; https://nrepl.org/nrepl/usage/server.html#_using_clojure_cli_tools
+;; clj -R:nREPL -m nrepl.cmdline
+;; clj -Sdeps '{:deps {nrepl/nrepl {:mvn/version "0.5.3"}}}' -m nrepl.cmdline
+
 {:paths ["src" "test"]
  :deps
  {org.clojure/clojure {:mvn/version "1.10.1"}
   clj-commons/clj-yaml {:mvn/version "0.7.0"}
-  clj-python/libpython-clj {:mvn/version "1.36"}}}
+  clj-python/libpython-clj {:mvn/version "1.37"}}}

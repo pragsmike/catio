@@ -58,7 +58,10 @@ Part of [[http://www.pothosware.com/][pothos]].
 
 [[http://www.mike-stirling.com/redmine/projects/webradio][WebRadio]]
 
-WebSDR
+A [[http://www.websdr.org/][WebSDR]] is a Software-Defined Radio receiver connected to the internet,
+allowing many listeners to listen and tune it simultaneously. SDR technology
+makes it possible that all listeners tune independently, and thus listen to
+different signals...
 
 [[https://eshail.batc.org.uk/nb/][Qatar-OSCAR 100 Narrowband WebSDR]]
  This WebSDR, hosted at Goonhilly Earth Station in Cornwall, enables you to listen to the Qatar-OSCAR 100 Narrow band transponder onboard the Es'hail-2 satellite. 

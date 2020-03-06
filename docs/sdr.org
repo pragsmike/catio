@@ -52,6 +52,10 @@ Part of [[http://www.pothosware.com/][pothos]].
  
 * Others
   
+[[https://github.com/ha7ilm/csdr][csdr]] is a command line tool to carry out DSP tasks for Software Defined Radio.
+It can be used to build simple signal processing flow graphs, right from the
+command line.
+ 
 [[https://batchdrake.github.io/SigDigger/][SigDigger]]
 
 [[https://github.com/kpreid/shinysdr][ShinySDR]]

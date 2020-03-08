@@ -3,9 +3,23 @@
 Model SDR flowgraphs with monoidal categories.
 
 Many software-defined-radio ([[https://www.rtl-sdr.com/][SDR]]) systems use a flowgraph to specify how
-the signals are to be processed. There are large numbers of devices, and
-lots of SDR programs that use them, so managing the ways of hooking them
-up poses a combinatorial challenge.
+the signals are to be processed. Here's a visualization from the
+[[https://luaradio.io/][LuaRadio]] documentation.
+
+[[https://luaradio.io/docs/figures/flowgraph_rtlsdr_ax25.png]]
+
+Some of them (gnuradio) provide a visual flowgraph editor,
+as well as a text format (XML, YAML) for storing models.
+
+All of them end up generating code at some point.
+Some examples of such code:
+   * [[https://luaradio.io/examples/rtlsdr-ax25.html][example ax25 decoder]] from the [[https://luaradio.io/][LuaRadio]] documentation.
+   * [need example of gnuradio ]
+
+     
+
+
+* Goals
 
 This project is investigating how to use CT techniques to
 
@@ -16,14 +30,15 @@ This project is investigating how to use CT techniques to
    * transform flowgraphs to different target runtimes
    * attach configuration data, provenance to flowgraph blocks.
 
+
+* Technical Goals
+
    * build open-source diagram management tools
      * interactive editors
      * databases
      * flowgraph read/write ([[https://github.com/statebox/monmor-spec][monmor]], gnuradio GRC, ptolemy)
      * flowgraph verify
      * convert, say, a gnuradio flowgraph to a luaradio program
-
-* Goals
 
    * Read and write serialized graphs in these formats:
      * monmor
@@ -76,6 +91,14 @@ This project is investigating how to use CT techniques to
    runtime target as well as a flowgraph file format.
    
 
+* gnuradio flowgraph -> LuaRadio program
+  
+  We'll build a function that transforms, say, a gnuradio flowgraph
+  model to equivalent LuaRadio code.
+  
+  As far as I know, there is no model storage format for LuaRadio. Its
+  models are constructed programatically by Lua code.
+  
 * SDR, Simulation Systems
   
   All these systems use some form of flowgraph to represent
@@ -147,6 +170,10 @@ This project is investigating how to use CT techniques to
    these from and to the in-memory format.
 
 * Math Questions
+
+There are large numbers of devices, and
+lots of SDR programs that use them, so managing the ways of hooking them
+up poses a combinatorial challenge.
 
 How to attach configuration data to the blocks?
 This is equivalent to a map of parameters such as

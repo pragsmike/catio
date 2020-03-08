@@ -1,0 +1,11 @@
+Tools are implemented in Clojure and Haskell.
+This is mostly to explore ways of interoperating,
+than for any good technical reason.
+
+Unix pipes between compiled programs seems like a good first solution to
+try.
+
+The model readers, written in Clojure, naturally emit the model in EDN
+format. Clojure programs will naturally just read that.
+
+To read EDN in Haskell, use [[http://hackage.haskell.org/package/hedn][hedn]].

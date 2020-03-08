@@ -1,29 +1,82 @@
 #+TITLE: GnuRadio
 
-
-
-* SDRPlay
-  
-These are my notes from wiring up gnuradio to SDRPlay RSPduo.
-
-[[https://github.com/osmocom/gr-osmosdr/releases][gr-osmosdr]] already supports SDRPlay (built on ealier [[https://www.sdrplay.com/community/viewtopic.php?t=2881][work to add SDRPlay support
-to gr-osmosdr]]?).
-
-This means that any program that works with the osmosdr API 
-will work with the SDRPlay RSP radios.
-
-Does osmo work with gnuradio 3.8 yet?
-
-There appears to be another driver at SDRPlay [[https://www.sdrplay.com/docs/gr-sdrplay-workflow.pdf][gr-sdrplay workflow]].
-
-[[https://hackaday.com/2015/11/12/your-first-gnu-radio-receiver-with-sdrplay/][Your First GnuRadio Receiver with SDRPlay]]
-
 [[http://www.abclinuxu.cz/blog/jenda/2019/11/gnu-radio-first-steps-a-fm-receiver][FM Receiver in GnuRadio, step by step]]
 
-[[https://osmocom.org/projects/sdr/wiki/fosphor][GnuRadio Fosphor spectrum display]]
+* fosphor
 
+  The fosphor display enables nice real-time spectrum analyzer
+  displays, via fast rendering.
 
-I've installed [[https://www.gnuradio.org/news/2020-02-16-gnu-radio-v3-8-1-0-rc1-release-candidate/][GnuRadio 3.8.1.0-RC1]].
+  [[https://osmocom.org/projects/sdr/wiki/fosphor][GnuRadio Fosphor spectrum display]]
+
+#+begin_src sh
+  sudo apt install -y gr-fosphor qtbase5-dev libqwt-qt5-dev swig
+#+end_src
+
+** OpenCL
+
+#+begin_src 
+-- Could NOT find OpenCL (missing: OpenCL_LIBRARY OpenCL_INCLUDE_DIR) 
+CMake Error at CMakeLists.txt:115 (message):
+  OpenCL required to compile gr-fosphor
+#+end_src
+
+[[https://developer.nvidia.com/cuda-toolkit][Nvidia cuda-toolkit]]
+
+[[https://askubuntu.com/questions/796770/how-to-install-libopencl-so-on-ubuntu][How to install libopencl on ubuntu]]
+
+[[https://gist.github.com/Brainiarc7/dc80b023af5b4e0d02b33923de7ba1ed][Preparing Ubuntu 18.04 for OpenCL development]]
+
+[[https://software.intel.com/en-us/articles/opencl-drivers][Intel opencl-drivers page]]
+
+#+begin_src sh
+add-apt-repository ppa:intel-opencl/intel-opencl
+apt-get update
+apt-get install intel-opencl-icd ocl-icd-opencl-dev
+#+end_src
+
+*** Intel OpenCL from the vendor
+
+   * https://registrationcenter.intel.com/en/products/postregistration/?sn=CD38-RGBTVC4F&EmailID=wa2hee%40outlook.com&Sequence=2653893&dnld=t
+   * https://github.com/intel/compute-runtime/blob/master/DISTRIBUTIONS.md
+
+#+begin_src sh
+01:00.0 VGA compatible controller: NVIDIA Corporation GK107GLM [Quadro K1100M] (rev a1)
+#+end_src
+
+#+begin_src sh
+  apt update; apt-file find libOpenCL.so
+
+  nvidia-libopencl1-340: /usr/lib/i386-linux-gnu/libOpenCL.so.1
+  nvidia-libopencl1-340: /usr/lib/i386-linux-gnu/libOpenCL.so.1.0
+  nvidia-libopencl1-340: /usr/lib/i386-linux-gnu/libOpenCL.so.1.0.0
+  nvidia-libopencl1-340: /usr/lib/x86_64-linux-gnu/libOpenCL.so.1
+  nvidia-libopencl1-340: /usr/lib/x86_64-linux-gnu/libOpenCL.so.1.0
+  nvidia-libopencl1-340: /usr/lib/x86_64-linux-gnu/libOpenCL.so.1.0.0
+  ocl-icd-libopencl1: /usr/lib/x86_64-linux-gnu/libOpenCL.so.1
+  ocl-icd-libopencl1: /usr/lib/x86_64-linux-gnu/libOpenCL.so.1.0.0
+  ocl-icd-libopencl1: /usr/share/man/man7/libOpenCL.so.7.gz
+  ocl-icd-opencl-dev: /usr/lib/x86_64-linux-gnu/libOpenCL.so
+#+end_src
+
+*** NVidia
+    
+    [[https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&target_distro=Ubuntu&target_version=1804&target_type=deblocal][NVidia CUDA downloads]]
+
+  #+begin_src sh
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin
+    sudo mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600
+    wget http://developer.download.nvidia.com/compute/cuda/10.2/Prod/local_installers/cuda-repo-ubuntu1804-10-2-local-10.2.89-440.33.01_1.0-1_amd64.deb
+    sudo dpkg -i cuda-repo-ubuntu1804-10-2-local-10.2.89-440.33.01_1.0-1_amd64.deb
+    sudo apt-key add /var/cuda-repo-10-2-local-10.2.89-440.33.01/7fa2af80.pub
+    sudo apt-get update
+    sudo apt-get -y install cuda
+#+end_src
+
+* Installing gnuradio 3.8
+
+I've installed [[https://www.gnuradio.org/news/2020-02-16-gnu-radio-v3-8-1-0-rc1-release-candidate/][GnuRadio 3.8.1.0-RC1]].  This is the one that supports
+Python 3.
 
 When possible, I put things in =~/.local= to avoid needing root.
 This sets that up.
@@ -61,6 +114,25 @@ correctly, even after =ldconfig= ran.
   git clone https://github.com/osmocom/gr-osmosdr.git
   cd gr-osmosdr && mkdir build && cd build && cmake ..
 #+end_src
+
+
+* SDRPlay
+  
+These are my notes from wiring up gnuradio to SDRPlay RSPduo.
+
+[[https://github.com/osmocom/gr-osmosdr/releases][gr-osmosdr]] already supports SDRPlay (built on ealier [[https://www.sdrplay.com/community/viewtopic.php?t=2881][work to add SDRPlay support
+to gr-osmosdr]]?).
+
+This means that any program that works with the osmosdr API 
+will work with the SDRPlay RSP radios.
+
+Does osmo work with gnuradio 3.8 yet?
+
+There appears to be another driver at SDRPlay [[https://www.sdrplay.com/docs/gr-sdrplay-workflow.pdf][gr-sdrplay workflow]].
+
+[[https://hackaday.com/2015/11/12/your-first-gnu-radio-receiver-with-sdrplay/][Your First GnuRadio Receiver with SDRPlay]]
+
+
 
 #+begin_src sh
   git clone https://gitlab.com/HB9FXQ/gr-sdrplay.git

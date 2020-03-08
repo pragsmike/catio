@@ -70,12 +70,3 @@ different signals...
 [[https://eshail.batc.org.uk/nb/][Qatar-OSCAR 100 Narrowband WebSDR]]
  This WebSDR, hosted at Goonhilly Earth Station in Cornwall, enables you to listen to the Qatar-OSCAR 100 Narrow band transponder onboard the Es'hail-2 satellite. 
 
- https://registrationcenter.intel.com/en/products/postregistration/?sn=CD38-RGBTVC4F&EmailID=wa2hee%40outlook.com&Sequence=2653893&dnld=t
- 
-https://github.com/intel/compute-runtime/blob/master/DISTRIBUTIONS.md
-
-#+begin_src sh
-add-apt-repository ppa:intel-opencl/intel-opencl
-apt-get update
-apt-get install intel-opencl-icd
-#+end_src

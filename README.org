@@ -112,7 +112,10 @@ This project is investigating how to use CT techniques to
 
 ** [[https://luaradio.io/][luaradio]]
 
-   If these could be generated, they could be re-read.
+   A nice lightweight alternative to gnuradio.
+   LuaRadio is intended for embedded devices.
+
+   Its flowgraphs are constructed programatically via Lua code.
    A tool could generate the Lua for a flowgraph,
    and then use LuaJIT to run it.
 
@@ -203,12 +206,6 @@ What GnuRadio blocks can contain other blocks?
 The Ubuntu =gnuradio= installs this example:
 [[file:/usr/share/gnuradio/examples/uhd/usrp_wfm_rcv_sca.py][usrp_wfm_rcv_sca.py]]
 
-LuaRadio is intended for embedded devices.
-A nice lightweight alternative to gnuradio.
-It has a JIT compiler!  How fast is it?
-It's portable to ARM.  Does it GC?
-
-How about a ClojureScript to LuaJIT compiler?
 
 [[https://osmocom.org/projects/sdr/wiki/fosphor][GnuRadio Fosphor spectrum display]]
 
@@ -229,7 +226,7 @@ How about a ClojureScript to LuaJIT compiler?
    type like int, or a structured type like array of int.
    Often the type will be "stream of int" or "stream of cfloat".
    
-   The flowgraphs can be seen as proofs in a monoidal 
+   The flowgraphs can be seen as morphisms in a monoidal 
    category.
 
 ** How to represent control plane in an SDR model?

@@ -158,3 +158,5 @@ Techniques for modeling systems based on energy flow.
 But be careful of generative effects in the model,
 such as the [[https://en.wikipedia.org/wiki/Two_capacitor_paradox][two-capacitor paradox]] that arises in simple
 models that neglect radiation.
+
+[[http://wodenimoni.com/assets/chi-20-natural-diagramming.pdf][How Domain Experts Create Conceptual Diagrams and Implications for Tool Design]]

@@ -8,16 +8,17 @@ the signals are to be processed. Here's a visualization from the
 
 [[https://luaradio.io/docs/figures/flowgraph_rtlsdr_ax25.png]]
 
-Some of them (gnuradio) provide a visual flowgraph editor,
-as well as a text format (XML, YAML) for storing models.
+Some of them (gnuradio, pothos) provide a visual flowgraph editor,
+as well as a text format (XML, YAML) for storing models.  Here's
+an example from a [[https://wiki.gnuradio.org/index.php/Guided_Tutorial_Introduction][gnuradio tutorial]]:
 
-All of them end up generating code at some point.
+[[https://wiki.gnuradio.org/index.php/File:Twoblocks_arrow.png]]
+
+All of these systems end up generating code at some point.
 Some examples of such code:
    * [[https://luaradio.io/examples/rtlsdr-ax25.html][example ax25 decoder]] from the [[https://luaradio.io/][LuaRadio]] documentation.
-   * [need example of gnuradio ]
-
-     
-
+   * [[https://wiki.gnuradio.org/index.php/Guided_Tutorial_GNU_Radio_in_Python][example of Python generated from gnuradio flowgraph]]
+   
 
 * Goals
 
@@ -123,21 +124,30 @@ This project is investigating how to use CT techniques to
 ** pothos
 ** ptolemy
    
+   Ptolemy is a simulation system, not a specialized signal-processing
+   workbench. Its models are much richer in structure than typical SDR
+   flowgraphs.
+   
    Ptolemy stores its flowgraphs in an XML format known as MoML.
    
    If you get an error like "Invalid DTD" when you parse a MoML file,
    you may have to change the DTD directive at the top of the MoML file
    to have the correct URL -- it must be =https:= not =http:=.
 
-   Ptolemy is a simulation system, not a specialized signal-processing
-   workbench. Its models are much richer in structure than typical SDR
-   flowgraphs.
 
-* Codec
+* Codecs, and flowgraph interchange format
 
-  We seek to convert graphs from GnuRadio and Ptolemy into
-  a common format, from whence may be produced other representations
-  such as [[https://github.com/statebox/monmor-spec][monmor]].
+  A codec is something that converts flowgraphs from GnuRadio and Ptolemy into a
+  common format, from whence may be produced other representations such as
+  [[https://github.com/statebox/monmor-spec][monmor]].
+  
+  I prefer to use EDN because (ht [[https://twitter.com/RobStuttaford/status/1237316915732905984?s=03][Rob Stuttaford]])
+    * Formats like Lisp, because it is Lisp
+    * Comments are fine
+    * Extensible reader support. Spec, if you're in #Clojure
+    * All the same IDE support a Lisp enjoys (paredit/parinfer)
+
+  EDN reader/writers are available in Haskell (hedn).
   
   The common format is an in-memory representation of the graph
   as a tree of maps.  We'll call them nodes.  Each node
@@ -203,11 +213,15 @@ What GnuRadio blocks can contain other blocks?
   
 [[http://www.abclinuxu.cz/blog/jenda/2019/11/gnu-radio-first-steps-a-fm-receiver][FM Receiver in GnuRadio, step by step]]
 
-The Ubuntu =gnuradio= installs this example:
-[[file:/usr/share/gnuradio/examples/uhd/usrp_wfm_rcv_sca.py][usrp_wfm_rcv_sca.py]]
+[[file:/usr/share/gnuradio/examples/uhd/usrp_wfm_rcv_sca.py][FM broadcast subcarrier decoder]] example decodes SCA signals
+present on some FM broadcast signals.  They carry specialized
+programming, such as books for the blind.
+Most receivers don't offer a way to decode these signals.
 
 
 [[https://osmocom.org/projects/sdr/wiki/fosphor][GnuRadio Fosphor spectrum display]]
+
+[[https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md][SigMF: gnuradio Signal Metadata Format]]
 
 * SDR models using ACT
 

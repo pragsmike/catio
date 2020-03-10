@@ -1,0 +1,65 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.1.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 2f8461015356d01d05173793dc87ce3767041e89fe33e0623d617ed5e7708c69
+
+name:           catio
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/pragsmike/catio#readme>
+homepage:       https://github.com/pragsmike/catio#readme
+bug-reports:    https://github.com/pragsmike/catio/issues
+author:         Mike Gallaher
+maintainer:     pragsmike@gmail.com
+copyright:      2020 Mike Gallaher
+license:        BSD3
+build-type:     Simple
+extra-source-files:
+    README.org
+
+source-repository head
+  type: git
+  location: https://github.com/pragsmike/catio
+
+library
+  exposed-modules:
+      Lib
+      Main
+  other-modules:
+      Paths_catio
+  hs-source-dirs:
+      src/lua
+  build-depends:
+      base >=4.7 && <5
+    , hedn >=0.3.0.0
+  default-language: Haskell2010
+
+executable catio-exe
+  main-is: Main.hs
+  other-modules:
+      Lib
+      Paths_catio
+  hs-source-dirs:
+      src/lua
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , catio
+    , hedn >=0.3.0.0
+  default-language: Haskell2010
+
+test-suite catio-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_catio
+  hs-source-dirs:
+      test/lua
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , catio
+    , hedn >=0.3.0.0
+  default-language: Haskell2010

@@ -9,3 +9,6 @@ The model readers, written in Clojure, naturally emit the model in EDN
 format. Clojure programs will naturally just read that.
 
 To read EDN in Haskell, use [[http://hackage.haskell.org/package/hedn][hedn]].
+
+[[https://docs.haskellstack.org/en/v2.1.3/yaml_configuration/][Stack yaml config]]
+

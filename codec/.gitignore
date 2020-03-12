@@ -2,3 +2,4 @@
 .nrepl*
 .stack-work/
 *~
+dist

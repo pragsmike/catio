@@ -25,6 +25,7 @@ dependencies:
 library:
   source-dirs: src/lua
 
+
 executables:
   catio-exe:
     main:                Main.hs
@@ -35,6 +36,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - catio
+    - hedn >= 0.3.0.0
 
 tests:
   catio-test:
@@ -46,3 +48,4 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - catio
+

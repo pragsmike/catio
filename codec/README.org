@@ -12,3 +12,19 @@ To read EDN in Haskell, use [[http://hackage.haskell.org/package/hedn][hedn]].
 
 [[https://docs.haskellstack.org/en/v2.1.3/yaml_configuration/][Stack yaml config]]
 
+* Error building on Ubuntu 18.04
+
+#+begin_src sh
+AesonException "Error in $.packages.cassava.constraints.flags['bytestring--lt-0_10_4']: Invalid flag name: \"bytestring--lt-0_10_4\""
+#+end_src
+
+Had the same problem. This worked
+
+1. uninstalling haskell-cabal with apt
+
+2. installing it agains with curl
+
+    curl -sSL https://get.haskellstack.org/ | sh
+
+as it is recommended (https://docs.haskellstack.org/en/stable/README/#how-to-install)
+

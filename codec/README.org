@@ -28,3 +28,75 @@ Had the same problem. This worked
 
 as it is recommended (https://docs.haskellstack.org/en/stable/README/#how-to-install)
 
+
+* Miscellany
+
+How to represent a graph where the edges have labels on each end?
+
+We already have functions dom,cod:E->N that choose a node for each end
+of the arrow.
+So define domPort,codPort:E->L where L is a set of labels.
+
+We'll call that a port-graph.
+
+* Lua shell programs and fragments
+  
+LuaRadio flowgraphs are built programmatically by Lua code.
+We seek to generate the program that will build a given flowgraph.
+In other words, we want to solve this problem:
+
+#+begin_example
+Given a flowgraph represented as a port-graph, 
+produce a Lua program that will construct that graph
+and run it.
+#+end_example
+
+Lua fragments are snippets of Lua code,
+always entire lines.
+Fragments may be composed like functions.
+There is an empty fragment.
+
+Lua shell programs are complete, executable programs
+that can be invoked from a shell.  A program
+has a top fragment, which is usually composed
+from other fragments.
+
+The programs we generate conform to a very limited
+subset of the Lua language.  They are compiled
+instructions to construct flowgraph nodes, and
+to construct links between their ports.
+
+The fragments are largely independent
+of each other, except that link-building fragments
+must appear after the node-building fragments
+in the generated sequence.
+
+
+** Lua shell programs
+
+   While the top fragment does the interesting work of building the graph,
+   it needs a shell program to give it a place to run to do that.  
+
+   The shell program's job is to "house" the fragment, to actually
+   run it to construct its graph.  Most importantly, it then runs
+   the flowgraph to carry out the processing specified by the graph.
+   
+   When it runs, the blocks in the flowgraph need access to devices
+   and files, so they rely on the runtime system to provide it.
+
+   Like any shell-accessible CLI program, Lua programs
+   are given the following in their runtime environment
+   when started by a shell:
+     * command-line arguments as a tuple of strings
+     * stdin, stdout, stderr streams
+     * filesystem
+     
+   So a Lua program's input is
+     * command-line arguments
+     * bytes read from stdin
+     * state accessible via filesystem
+
+   A Lua program's output is
+     * exit status code
+     * bytes written to stdout, stderr
+     * mutations of state in filesystem

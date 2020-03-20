@@ -11,6 +11,13 @@ packages:
       sha256: 221397a5136748ef05daca42555731fdd2fd04fb05ac02204c8606ba3ecf0c38
   original:
     hackage: hedn-0.3.0.0
+- completed:
+    hackage: yaml-0.11.3.0@sha256:8861d89a2237a455869dc602a773311f45e68a70fee618d0c303b46c05ac1b1d,5109
+    pantry-tree:
+      size: 1988
+      sha256: 191ee198b9a0801d1ca3e803b50a2a5213896b72c353ad592b3fb25d59dd48b6
+  original:
+    hackage: yaml-0.11.3.0
 snapshots:
 - completed:
     size: 495206

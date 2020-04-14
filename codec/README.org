@@ -6,7 +6,7 @@ Unix pipes between compiled programs seems like a good first solution to
 try.
 
 The model readers, written in Clojure, naturally emit the model in EDN
-format. Clojure programs will naturally just read that.
+format. Clojure programs naturally read EDN.
 
 To read EDN in Haskell, use [[http://hackage.haskell.org/package/hedn][hedn]].
 

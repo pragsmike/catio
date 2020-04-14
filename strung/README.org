@@ -167,3 +167,7 @@ distributed systems using Generalized Stochastic Petri Nets and their colored
 extension, Stochastic Well-formed Nets. The tool provides a friendly framework
 to experiment with timed Petri net based modeling techniques. It implements
 efficient analysis algorithms to allow its use on rather complex applications.
+
+[[https://ivanceras.github.io/svgbob-editor/][Svgbob Editor]] Convert your ascii diagram scribbles into happy little SVG.
+
+[[https://github.com/appliedcategorytheory/TikZWD][TikZWD]] catalog of string diagrams in Tikz

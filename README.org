@@ -2,6 +2,9 @@
 
 Model SDR flowgraphs with monoidal categories.
 
+This is just my notes and some experimental code.
+It's probably not of much use to anyone else, just now.
+
 Many software-defined-radio ([[https://www.rtl-sdr.com/][SDR]]) systems use a flowgraph to specify how
 the signals are to be processed. Here's a visualization from the
 [[https://luaradio.io/][LuaRadio]] documentation.
@@ -222,6 +225,12 @@ Most receivers don't offer a way to decode these signals.
 [[https://osmocom.org/projects/sdr/wiki/fosphor][GnuRadio Fosphor spectrum display]]
 
 [[https://github.com/gnuradio/SigMF/blob/master/sigmf-spec.md][SigMF: gnuradio Signal Metadata Format]]
+
+[[https://arxiv.org/pdf/1406.2063.pdf][Foundations of Total Functional Dataflow Programming]]
+
+[[https://www.youtube.com/watch?v=QpWaSaYSyXw&t=62s][Structured Cospans and Double Categories]], John Baez
+
+[[https://www.cs.cornell.edu/~avh/diospyros-lctes-2020.pdf][Diospyros, compiler optimizing data layout in DSPs]]
 
 * SDR models using ACT
 

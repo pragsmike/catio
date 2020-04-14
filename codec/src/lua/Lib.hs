@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, DeriveGeneric #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Lib
     ( main3
     ) where
@@ -6,8 +6,8 @@ import qualified Data.EDN as EDN
 import qualified Data.Text.IO as Text
 import qualified Data.Yaml as Y
 import qualified Data.ByteString.Char8 as BS
-import GHC.Generics
-import Data.Map
+-- import GHC.Generics
+-- import Data.Map
 
 ------------------------------------------------------------------------
 -- Given block parameters, construct a program fragment
@@ -55,6 +55,7 @@ main2 = do
 
 
 sampleYaml = "test/two-yaml.grc"
+
 main3 :: IO ()
 main3 = do
   yamls <- BS.readFile sampleYaml

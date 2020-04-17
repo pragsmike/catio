@@ -171,3 +171,5 @@ efficient analysis algorithms to allow its use on rather complex applications.
 [[https://ivanceras.github.io/svgbob-editor/][Svgbob Editor]] Convert your ascii diagram scribbles into happy little SVG.
 
 [[https://github.com/appliedcategorytheory/TikZWD][TikZWD]] catalog of string diagrams in Tikz
+
+[[https://arxiv.org/abs/1706.02630][A Categorical Model for a Quantum Circuit Description Language]]

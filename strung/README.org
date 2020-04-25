@@ -145,6 +145,8 @@ and deformation of diagrams.
 [[https://github.com/negrinho/sane_tikz][sane_tikz]] generates Tikz code from a nicer textual description of a diagram.
 It's python code, but it uses some interesting patterns.
 
+[[http://angg.twu.net/dednat6.html][dednat]] luatex, process diagrams in LaTeX comments
+
 [[http://www.philipzucker.com/categorical-combinators-for-graphviz-in-python/][Categorical Combinators for GraphViz in Python]]
 
 [[https://github.com/statebox/monmor-spec/blob/master/README.md][Exchange format for morphisms in Monoidal Categories]]

@@ -1,0 +1,48 @@
+#+TITLE: Spanner: channel recognizer
+
+  spanner
+  
+* [[https://julialang.org/][Julia Language]]
+  
+  [[http://courses.csail.mit.edu/18.337/2018/][MIT 18.337 Modern Numerical Computing]]
+  
+  [[https://github.com/JayKickliter/gr-juliaffi][gnuradio Julia block]]
+  [[https://github.com/dressel/RTLSDR.jl][Julia wrapper for rtlsdr library]]
+  [[https://github.com/sygreer/SoapySDR.jl][Julia wrapper for SoapySDR]]
+  [[https://github.com/sygreer/SoapySDR.jl/blob/master/examples/SoapySDR.jl.ipynb][Demo notebook for SoapySDR Julia wrapper]]
+  [[https://juliakorea.github.io/soc/projects/audiodsp.html#juliaaudio-projects--summer-of-code][Julia Audio projects]] audio and music, but should work for complex sample streams too
+  
+  [[https://github.com/JuliaMath/FFTW.jl][JuliaMath/FFTW.jl]]
+  [[https://github.com/JuliaDSP/DSP.jl][JuliaDSP/DSP.jl]]
+  [[https://github.com/JuliaPy/PyPlot.jl][JuliaPy/PyPlot.jl]] 
+  [[https://github.com/JuliaAudio/SampledSignals.jl][JuliaAudio/SampledSignals.jl]]  
+
+  Installing Julia on (almost any) x86 Linux:
+  #+begin_src 
+  sudo tar xf julia-1.4.2-linux-x86_64.tar.gz -C /usr/local --strip-components=1
+  #+end_src
+
+* Spanner algorithm
+
+  Probability that a bin belongs to a channel
+
+  Probability that a channel exists that contains the given bin(s)
+
+  Given a time-domain complex sample stream of sampling rate S
+  by taking an N-point FFT
+  we derive a stream of frequency-domain bin vectors occuring at rate S/N.
+  
+  We treat each vector of bins as one observation.
+
+  Each bin is related to its nearest neighbors.
+  Each bin is related to its past self.
+
+* Channel distortions
+  
+  The algorithm must perform with these channel degradations:
+  
+  * There are transient signals at discrete frequencies.
+  * Every couple of seconds, there is a very wideband signal that delivers
+    energy into all bins for a few tens of milliseconds.
+  
+

@@ -1,0 +1,82 @@
+#+TITLE: Pothos
+
+Instructions are from [[https://github.com/pothosware/PothosCore/wiki/Ubuntu][Pothos Ubuntu]].
+
+* APT Repositories
+#+begin_src bash
+#core framework and toolkits (required)
+sudo add-apt-repository -y ppa:pothosware/framework
+
+#support libraries for pothos (required)
+sudo add-apt-repository -y ppa:pothosware/support
+
+#supplies soapysdr, and drivers (required)
+sudo add-apt-repository -y ppa:myriadrf/drivers
+
+#needed when using bladerf devices
+sudo add-apt-repository -y ppa:bladerf/bladerf
+
+#needed when using usrp devices
+sudo add-apt-repository -y ppa:ettusresearch/uhd
+
+#always update after adding PPAs
+sudo apt-get update
+#+end_src
+
+* Pothos Core
+#+begin_src bash
+sudo apt-get install -y pothos-all
+
+#install bindings for python2
+sudo apt-get install -y python-pothos
+
+#or install bindings for python3
+sudo apt-get install -y python3-pothos
+
+#install development files for python blocks
+sudo apt-get install -y pothos-python-dev
+#+end_src
+
+* Pothos Runtime
+
+#+begin_src bash
+#soapy sdr runtime and utilities
+sudo apt-get install -y soapysdr-tools
+
+#python language bindings
+sudo apt-get install -y python-soapysdr python-numpy
+
+#python3 language bindings
+sudo apt-get install -y python3-soapysdr python3-numpy
+
+#using soapy sdr for remote device support?
+sudo apt-get install -y soapysdr-module-remote soapysdr-server
+#+end_src
+
+* Hardware
+
+#+begin_src bash
+#osmo sdr support:
+sudo apt-get install -y osmo-sdr soapysdr-module-osmosdr
+
+#rtl sdr support:
+sudo apt-get install -y rtl-sdr soapysdr-module-rtlsdr
+
+#blade rf support:
+sudo apt-get install -y bladerf soapysdr-module-bladerf
+
+#usrp support:
+sudo apt-get install -y uhd-host uhd-soapysdr soapysdr-module-uhd
+#+end_src
+
+* Test
+
+#+begin_src bash bash
+#print information about the install
+PothosUtil --system-info
+SoapySDRUtil --info
+
+#run the design GUI -- there should also be a menu shortcut
+PothosFlow
+
+#+end_src

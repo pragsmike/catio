@@ -232,6 +232,8 @@ Most receivers don't offer a way to decode these signals.
 
 [[https://www.cs.cornell.edu/~avh/diospyros-lctes-2020.pdf][Diospyros, compiler optimizing data layout in DSPs]]
 
+
+
 * SDR models using ACT
 
   synthesizer patch bay is a monoidal category

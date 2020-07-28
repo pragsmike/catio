@@ -1,14 +1,13 @@
-using FFTW, PyPlot
+using FFTW, PyPlot, DSP
 
 fn = "/home/mg/Documents/signals/gqrx_20200719_185425_454350100_1200000_fc.raw"
 
-num_bins = 128
-freq = 454.3501e6
-samprate = 1200000
+const num_bins = 512
+const freq = 454.3501e6
+const samprate = 1200000
 
-samps = Array{ComplexF32}(undef, num_bins)
 
-function fillsamps(f, dest)
+function fillsamps!(f, dest)
     for n in eachindex(dest)
         if eof(f)
             return false
@@ -30,19 +29,16 @@ function thresh(bins, th)
     end
 end
 
-history_size = 10
-history = zeros(Float32, num_bins, history_size)
-history_i = 0
+const history_size = 10
 
-function mavg(avg, bins)
+function mavg!(avg, bins, history, history_i)
     for i in eachindex(bins)
-        global history_i += 1
-        global history[i, history_i] = bins[i]
+        history_i += 1
+        history[i, history_i] = bins[i]
         if history_i >= history_size; history_i = 0; end
-        t = sum(history[i,:])/history_size
-        global avg[i] = t
+        avg[i] = sum(history[i,:])/history_size
     end
-    return avg
+    return history_i
 end
 
 function plot_hists(bins)
@@ -51,9 +47,12 @@ function plot_hists(bins)
 end
 
 
-function add_to_hists(bins, hist_5)
+function add_to_hists(bins, hist_5, hist_10)
     for i in eachindex(bins)
-        if (bins[i] > .09)
+        if (bins[i] > .10)
+            hist_10[i] +=1
+        end
+        if (bins[i] > .07)
             hist_5[i] += 1
         end
     end
@@ -62,18 +61,27 @@ end
 function dofile(fn)
     open(fn) do f
         hist_5 = zeros(Int, num_bins)
-        avg = zeros(Float32, num_bins)
-        for i in 1:50000
-            fillsamps(f,samps)
+        hist_10 = zeros(Int, num_bins)
+        avgmagbins = zeros(Float32, num_bins)
+        samps = Array{ComplexF32}(undef, num_bins)
+        window = DSP.Windows.hanning(num_bins, padding=0, zerophase=false)
+        history = zeros(Float32, num_bins, history_size)
+        history_i = 0
+        for i in 1:6000000
+            if !fillsamps!(f,samps); break; end
+            samps = window .*samps
             bins = fft(samps)
             magbins = abs.(bins)
-            avgmagbins = mavg(avg, magbins)
-            add_to_hists(avgmagbins, hist_5)
+            history_i = mavg!(avgmagbins, magbins, history, history_i)
+            add_to_hists(avgmagbins, hist_5, hist_10)
             if i % 25000 == 0
-                println(avgmagbins[1])
+                println(avgmagbins[18])
             end
         end
+        write("/tmp/hist_5", hist_5)
+        write("/tmp/hist_10", hist_10)
         plot_hists(hist_5)
+        plot_hists(hist_10)
     end
 end
 

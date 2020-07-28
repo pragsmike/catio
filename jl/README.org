@@ -16,7 +16,8 @@
   [[https://github.com/JuliaDSP/DSP.jl][JuliaDSP/DSP.jl]]
   [[https://github.com/JuliaPy/PyPlot.jl][JuliaPy/PyPlot.jl]] 
   [[https://github.com/JuliaAudio/SampledSignals.jl][JuliaAudio/SampledSignals.jl]]  
-
+  [[https://stackoverflow.com/questions/56030394/how-to-visualize-fft-of-a-signal-in-julia][How to visualize fft of a signal in julia]]
+  
   Installing Julia on (almost any) x86 Linux:
   #+begin_src 
   sudo tar xf julia-1.4.2-linux-x86_64.tar.gz -C /usr/local --strip-components=1

@@ -2,7 +2,7 @@ using FFTW, PyPlot, DSP
 
 fn = "/home/mg/Documents/signals/gqrx_20200719_185425_454350100_1200000_fc.raw"
 
-const num_bins = 512
+const num_bins = 2048
 const freq = 454.3501e6
 const samprate = 1200000
 
@@ -47,20 +47,28 @@ function plot_hists(bins)
 end
 
 
-function add_to_hists(bins, hist_5, hist_10)
+function add_to_hists(bins, hist_4, hist_6, hist_8, hist_10)
     for i in eachindex(bins)
         if (bins[i] > .10)
-            hist_10[i] +=1
+            hist_10[i] += 1
         end
-        if (bins[i] > .07)
-            hist_5[i] += 1
+        if (bins[i] > .08)
+            hist_8[i] += 1
+        end
+        if (bins[i] > .06)
+            hist_6[i] += 1
+        end
+        if (bins[i] > .04)
+            hist_4[i] += 1
         end
     end
 end
 
 function dofile(fn)
     open(fn) do f
-        hist_5 = zeros(Int, num_bins)
+        hist_4 = zeros(Int, num_bins)
+        hist_6 = zeros(Int, num_bins)
+        hist_8 = zeros(Int, num_bins)
         hist_10 = zeros(Int, num_bins)
         avgmagbins = zeros(Float32, num_bins)
         samps = Array{ComplexF32}(undef, num_bins)
@@ -73,16 +81,20 @@ function dofile(fn)
             bins = fft(samps)
             magbins = abs.(bins)
             history_i = mavg!(avgmagbins, magbins, history, history_i)
-            add_to_hists(avgmagbins, hist_5, hist_10)
+            add_to_hists(avgmagbins, hist_4, hist_6, hist_8, hist_10)
             if i % 25000 == 0
                 println(avgmagbins[18])
             end
         end
-        write("/tmp/hist_5", hist_5)
+        write("/tmp/hist_4", hist_4)
+        write("/tmp/hist_6", hist_6)
+        write("/tmp/hist_8", hist_8)
         write("/tmp/hist_10", hist_10)
-        plot_hists(hist_5)
+        plot_hists(hist_4)
+        plot_hists(hist_6)
+        plot_hists(hist_8)
         plot_hists(hist_10)
     end
 end
 
-dofile(fn)
+@time dofile(fn)

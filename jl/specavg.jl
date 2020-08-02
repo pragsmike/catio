@@ -5,15 +5,15 @@ outfn = "/tmp/fft_frames_avg"
 
 const num_bins = 2048
 
-const history_size = 10
+const history_size = 100
 
 function mavg!(avg, bins, history, history_i)
-    history_i += 1
     for i in eachindex(bins)
         history[i, history_i] = bins[i]
         avg[i] = sum(history[i,:])/history_size
     end
-    if history_i >= history_size; history_i = 0; end
+    history_i += 1
+    if history_i >= history_size; history_i = 1; end
     return history_i
 end
 
@@ -21,7 +21,7 @@ function dofile(infn, outfn)
     magbins = Array{Float32}(undef, num_bins)
     avgmagbins = zeros(Float32, num_bins)
     history = zeros(Float32, num_bins, history_size)
-    history_i = 0
+    history_i = 1
     open(infn) do inf
         open(outfn, "w") do outf
             for i in 1:6000000

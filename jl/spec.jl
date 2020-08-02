@@ -21,7 +21,7 @@ function dofile(infn, outfn)
                 samps .= window .*samps
                 fft!(samps)
                 bins = fftshift(samps)
-                magbins .= abs.(samps)
+                magbins .= abs2.(bins)
                 write(fbins, magbins)
                 if i % 25000 == 0
                     println(magbins[18])

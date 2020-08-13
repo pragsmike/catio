@@ -1,4 +1,4 @@
-using Printf, Plots
+using Printf, Plots, PyPlot
 
 infn = "/home/mg/Documents/signals/hists"
 #infn = "/tmp/hists"
@@ -40,21 +40,23 @@ end
 function getval(x,y)
     tx = Int(floor(clamp(x, 1, fft_bins)))
     ty = Int(floor(clamp(y, 1, hist_bins)))
-    probs[tx, ty]
+    hists[tx, ty]
 end
 function doplot()
-    pyplot()
     x = range(1, fft_bins, step = 4)
     y = range(1, hist_bins, step = 1)
     z = getval
-    #surface(x, y, z)
-    wireframe(x, y, z, c = :thermal)
+    surface(x, y, z, size = (2000,2000))
+    #wireframe(x, y, z, c = :thermal)
+end
+
+function doplot2()
+    th = transpose(hists)
+    h = th[60,:]; PyPlot.plot(h)
 end
 
 dofile(infn)
 
-th = transpose(hists)
-h = th[127,:]
-PyPlot.plot(h)
-
+#pyplot()
+plotlyjs()
 #display(doplot())

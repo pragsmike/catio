@@ -304,7 +304,7 @@ class top_block(gr.top_block, Qt.QWidget):
         self.osmosdr_source_0.set_sample_rate(samp_rate)
         self.osmosdr_source_0.set_center_freq(freq_tune, 0)
         self.osmosdr_source_0.set_freq_corr(0, 0)
-        self.osmosdr_source_0.set_gain(10, 0)
+        self.osmosdr_source_0.set_gain(gain, 0)
         self.osmosdr_source_0.set_if_gain(20, 0)
         self.osmosdr_source_0.set_bb_gain(20, 0)
         self.osmosdr_source_0.set_antenna('', 0)
@@ -418,6 +418,7 @@ class top_block(gr.top_block, Qt.QWidget):
 
     def set_gain(self, gain):
         self.gain = gain
+        self.osmosdr_source_0.set_gain(self.gain, 0)
 
     def get_freq_tune(self):
         return self.freq_tune

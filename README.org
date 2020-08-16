@@ -56,6 +56,7 @@ This project is investigating how to use CT techniques to
      * gnuradio (python)
      * luaradio (lua)
      * ptolemy (xml)
+     * DSP/SampledSignals/Catlab julia
        
    * Verify properties of flowgraphs
 
@@ -65,6 +66,11 @@ This project is investigating how to use CT techniques to
   There's a collection of documentation and sample flowgraph files.
   There is one codec for reading gnuradio GRC files.
   
+  The [[file:jl][jl]] subdirectory has some experiments using Julia.
+  Julia is suitable for both fast low-level signal processing
+  (what you'd use C for) as well as high-level scripting
+  plumbing such as constructing flowgraphs (what you'd use Python for).
+
   The [[file:strung][strung]] subdirectory has a companion project to build a diagram
   editor.
   

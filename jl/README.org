@@ -6,17 +6,20 @@
   
   [[http://courses.csail.mit.edu/18.337/2018/][MIT 18.337 Modern Numerical Computing]]
   
-  [[https://github.com/JayKickliter/gr-juliaffi][gnuradio Julia block]]
-  [[https://github.com/dressel/RTLSDR.jl][Julia wrapper for rtlsdr library]]
-  [[https://github.com/sygreer/SoapySDR.jl][Julia wrapper for SoapySDR]]
-  [[https://github.com/sygreer/SoapySDR.jl/blob/master/examples/SoapySDR.jl.ipynb][Demo notebook for SoapySDR Julia wrapper]]
-  [[https://juliakorea.github.io/soc/projects/audiodsp.html#juliaaudio-projects--summer-of-code][Julia Audio projects]] audio and music, but should work for complex sample streams too
+  [[https://dspace.sunyconnect.suny.edu/bitstream/handle/1951/70206/R%20Quinn%20MS%20Project%20document%2020180507.pdf?sequence=1&isAllowed=y][Applicability of the Julia Programming Language to Forward Error-Correction Coding in Digital Communications Systems]]
+  R Quinn
+
+  * [[https://github.com/JayKickliter/gr-juliaffi][gnuradio Julia block]]
+  * [[https://github.com/dressel/RTLSDR.jl][Julia wrapper for rtlsdr library]]
+  * [[https://github.com/sygreer/SoapySDR.jl][Julia wrapper for SoapySDR]]
+  * [[https://github.com/sygreer/SoapySDR.jl/blob/master/examples/SoapySDR.jl.ipynb][Demo notebook for SoapySDR Julia wrapper]]
+  * [[https://juliakorea.github.io/soc/projects/audiodsp.html#juliaaudio-projects--summer-of-code][Julia Audio projects]] audio and music, but should work for complex sample streams too
   
-  [[https://github.com/JuliaMath/FFTW.jl][JuliaMath/FFTW.jl]]
-  [[https://github.com/JuliaDSP/DSP.jl][JuliaDSP/DSP.jl]]
-  [[https://github.com/JuliaPy/PyPlot.jl][JuliaPy/PyPlot.jl]] 
-  [[https://github.com/JuliaAudio/SampledSignals.jl][JuliaAudio/SampledSignals.jl]]  
-  [[https://stackoverflow.com/questions/56030394/how-to-visualize-fft-of-a-signal-in-julia][How to visualize fft of a signal in julia]]
+  * [[https://github.com/JuliaAudio/SampledSignals.jl][JuliaAudio/SampledSignals.jl]]  
+  * [[https://github.com/JuliaDSP/DSP.jl][JuliaDSP/DSP.jl]]
+  * [[https://github.com/JuliaMath/FFTW.jl][JuliaMath/FFTW.jl]]
+  * [[https://github.com/JuliaPy/PyPlot.jl][JuliaPy/PyPlot.jl]] 
+  * [[https://stackoverflow.com/questions/56030394/how-to-visualize-fft-of-a-signal-in-julia][How to visualize fft of a signal in julia]]
   
   Installing Julia on (almost any) x86 Linux:
   #+begin_src 

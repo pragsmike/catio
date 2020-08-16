@@ -1,0 +1,9 @@
+
+  SigMF
+  
+  Midas Blue
+  
+  [[https://www.vita.com/resources/Documents/Articles/IEEE%20CAS%20Mag%202012.pdf][VITA-49]] VmE bus International trade Association (VItA) 49 standard. VItA 49 is
+  a packet-based protocol to con-vey digitized signal data and metadata (or
+  context data) per-taining to different reference points within a radio
+  receiver.

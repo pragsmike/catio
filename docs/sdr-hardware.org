@@ -1,0 +1,6 @@
+ [[https://www.nooelec.com/store/sdr/sdr-receivers/nesdr-smart-sdr.html][NooElec NESDR Smart v4]] 
+  
+  Epiq Sidekiq
+  
+  NI UHD USRP
+  

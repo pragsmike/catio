@@ -1,67 +1,88 @@
-using FFTW, PyPlot, DSP
+using FFTW, PyPlot, DSP, DataStructures, StatsBase
 
-fn = "data/2048/hist_6"
+infn = "data/hists"
+const fft_bins = 2048
+const hist_bins = 128
 
-function fillspec!(f, bins)
-    for n in eachindex(bins)
-        if eof(f)
-            return false
-        end
-        bins[n] = read(f, Int)
-    end
-    return true
-end
-
-function plot_hists(bins)
-    PyPlot.plot(bins)
-end
-
-const fc = 50
-const a = 1/(2*pi*fc + 1)
-
-function hpf(x)
-    let y = zeros(Float32, length(x))
-        y[1] = 0
-        for i in 2:length(x)
-            y[i] = a * (y[i-1] + x[i] - x[i - 1])
-        end
-        return y
+function cumulate(hist)
+    acc = hist[1]
+    for i in 2:length(hist)
+        acc += hist[i]
+        hist[i] = acc
     end
 end
 
-const fcl = 1000
-const al = 2*pi*fcl / (1 + 2*pi*fcl)
-
-function lpf(x)
-    let y = zeros(Float32, length(x))
-        y[1] = al * x[1]
-        for i in 2:length(x)
-            y[i] = al * x[i] + (1-al) * y[i-1]
-        end
-        return y
-    end
+struct Channel
+    bot
+    top
 end
 
-function thresh!(bins, th)
-    for i in eachindex(bins)
-        if (bins[i] > th)
-            bins[i] = 1
-        elseif (bins[i] < -th)
-            bins[i] = -1
+const binhzw = 1200000/2048
+const bin1 = 453749800
+
+function width(c)
+    (c.top-c.bot)*binhzw
+end
+function center(c)
+    binhzw*(c.top+c.bot)/2 + bin1
+end
+
+Base.show(io::IO, x::Channel) = print(io, string("[" , x.bot , " " , x.top , "] ", width(x), " ", round(center(x)/1e6, digits=3)))
+
+channels = nil()
+
+cbot = -1
+
+function chanbot(bot)
+    global cbot = bot
+end
+function chantop(top)
+    c = Channel(cbot,top)
+    global channels = cons(c, channels)
+end
+
+hists = Array{Int}(undef, fft_bins, hist_bins)
+
+function dofile(infn)
+    open(infn) do inf
+        read!(inf, hists)
+    end
+    for i in 1:fft_bins
+        let v = view(hists,i,:)
+            cumulate(v)
+        end
+    end
+
+    th = transpose(hists)
+    h = th[60,:]
+    #PyPlot.plot(h)
+
+    base = h[1]
+    state = false
+    for i in 2:length(h)
+        d = base - h[i]
+        t = 5000
+        if d > t
+            if state == false
+                state = true
+                chanbot(i)
+            end
         else
-            bins[i] = 0
+            if state == true
+                state = false
+                chantop(i)
+            end
         end
     end
-end
-
-let bins = zeros(Int, 2048), filtbins = zeros(Float32, 2048)
-    open(fn) do f
-        fillspec!(f, bins)
+    for i in channels
+        println(i)
     end
-    filtbins = hpf(bins)
-    filtbins = fftshift(filtbins)
-    filtbins = lpf(filtbins)
-    thresh!(filtbins, 50)
-    plot_hists(filtbins)
+
+    widths = [ width(c) for c in channels]
+
+#    PyPlot.hist(widths)
+
 end
 
+
+dofile(infn)

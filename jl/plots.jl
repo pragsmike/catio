@@ -42,7 +42,8 @@ function getval(x,y)
     ty = Int(floor(clamp(y, 1, hist_bins)))
     hists[tx, ty]
 end
-function doplot()
+
+function plotsurf()
     x = range(1, fft_bins, step = 4)
     y = range(1, hist_bins, step = 1)
     z = getval
@@ -50,7 +51,7 @@ function doplot()
     #wireframe(x, y, z, c = :thermal)
 end
 
-function doplot2()
+function plotslice()
     th = transpose(hists)
     h = th[60,:]; PyPlot.plot(h)
 end
@@ -59,4 +60,4 @@ dofile(infn)
 
 #pyplot()
 plotlyjs()
-#display(doplot())
+display(doplot())

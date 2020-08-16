@@ -115,6 +115,11 @@ correctly, even after =ldconfig= ran.
   cd gr-osmosdr && mkdir build && cd build && cmake ..
 #+end_src
 
+** gr_plot_qt needs PyQwt
+
+#+begin_src sh
+  pybombs install pyqwt5
+#+end_src
 
 * SDRPlay
   

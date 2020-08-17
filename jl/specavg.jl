@@ -9,27 +9,35 @@ const history_size = 100
 
 mutable struct MA
     avgmagbins::Array{Float32}
+    accum::Array{Float32}
     history::Array{Float32, 2}
     history_i::Int32
 end
 
 function newMA(num_bins, history_size)
     return MA(zeros(Float32, num_bins),
+              zeros(Float32, num_bins),
               zeros(Float32, num_bins, history_size),
               1)
 end
 
 function add!(ma::MA, magbins)
-    history_size = size(ma.history)[2]
+    now = ma.history_i
     for i in eachindex(magbins)
-        ma.history[i, ma.history_i] = magbins[i]
-        ma.avgmagbins[i] = sum(ma.history[i,:])/history_size
+        ma.accum[i] -= ma.history[i, now]
+        ma.history[i, now] = magbins[i]
+        ma.accum[i] += magbins[i]
     end
     ma.history_i += 1
+    history_size = size(ma.history)[2]
     if ma.history_i > history_size; ma.history_i = 1; end
 end
 
-
+function get(ma::MA)
+    history_size = size(ma.history)[2]
+    ma.avgmagbins .= ma.accum./history_size
+    return ma.avgmagbins
+end
 
 function dofile(infn, outfn)
     magbins = Array{Float32}(undef, num_bins)
@@ -44,9 +52,9 @@ function dofile(infn, outfn)
                     break
                 end
                 add!(ma, magbins)
-                write(outf, ma.avgmagbins)
+                write(outf, get(ma))
                 if i % 25000 == 0
-                    println(ma.avgmagbins[18])
+                    println(get(ma)[18])
                 end
             end
         end
@@ -59,19 +67,25 @@ end
     ma = newMA(num_bins, history_size)
     add!(ma, magbins)
 
-    @test ma.avgmagbins ≈ fill(0.01, num_bins)
+    @test get(ma) ≈ fill(0.01, num_bins)
+    @test ma.accum ≈ fill(1.0, num_bins)
+    @test ma.history_i == 2
 
     add!(ma, magbins)
 
-    @test ma.avgmagbins ≈ fill(0.02, num_bins)
+    @test get(ma) ≈ fill(0.02, num_bins)
+    @test ma.accum ≈ fill(2.0, num_bins)
+    @test ma.history_i == 3
 
     for i in 1:200
         add!(ma, magbins)
     end
     @test ma.history[1,:] ≈ fill(1.0, history_size)
+    @test ma.accum ≈ fill(100.0, num_bins)
+    @test ma.history_i == 3
 
-    @test ma.avgmagbins ≈ fill(1.0, num_bins)
+    @test get(ma) ≈ fill(1.0, num_bins)
 
 end
 
-#@time dofile(infn, outfn)
+@time dofile(infn, outfn)

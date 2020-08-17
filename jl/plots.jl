@@ -60,4 +60,4 @@ dofile(infn)
 
 #pyplot()
 plotlyjs()
-display(doplot())
+#display(plotsurf())

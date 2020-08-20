@@ -1,0 +1,7 @@
+name = "CatioTest"
+uuid = "3dec97e0-7979-4a5f-9c92-bbe9498d643f"
+version = "1.0.0"
+
+[deps]
+Catio = "2dec97e0-7979-4a5f-9c92-bbe9498d643f"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

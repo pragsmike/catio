@@ -1,11 +1,3 @@
-using FFTW, PyPlot, DSP,Test,Printf
-
-infn = "/home/mg/Documents/signals/fft_frames"
-outfn = "/tmp/fft_frames_avg"
-
-const num_bins = 2048
-
-const history_size = 100
 
 mutable struct MA
     avgmagbins::Array{Float32}
@@ -39,9 +31,9 @@ function get(ma::MA)
     return ma.avgmagbins
 end
 
-function dofile(infn, outfn)
+function dofile(ma, infn, outfn)
+    num_bins = length(ma.avgmagbins)
     magbins = Array{Float32}(undef, num_bins)
-    ma = newMA(num_bins, history_size)
     open(infn) do inf
         open(outfn, "w") do outf
             for i in 1:6000000
@@ -61,31 +53,3 @@ function dofile(infn, outfn)
     end
 end
 
-@testset "moving average sanity checks" begin
-    magbins = ones(Float32, num_bins)
-
-    ma = newMA(num_bins, history_size)
-    add!(ma, magbins)
-
-    @test get(ma) ≈ fill(0.01, num_bins)
-    @test ma.accum ≈ fill(1.0, num_bins)
-    @test ma.history_i == 2
-
-    add!(ma, magbins)
-
-    @test get(ma) ≈ fill(0.02, num_bins)
-    @test ma.accum ≈ fill(2.0, num_bins)
-    @test ma.history_i == 3
-
-    for i in 1:200
-        add!(ma, magbins)
-    end
-    @test ma.history[1,:] ≈ fill(1.0, history_size)
-    @test ma.accum ≈ fill(100.0, num_bins)
-    @test ma.history_i == 3
-
-    @test get(ma) ≈ fill(1.0, num_bins)
-
-end
-
-@time dofile(infn, outfn)

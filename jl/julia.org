@@ -1,0 +1,14 @@
+#+TITLE: Julia Setup
+
+Download at least Julia 1.5.0 from julialang.org
+and install it.
+
+#+begin_src sh
+pip install --user jupyterlab
+#+end_src
+
+#+begin_src
+julia
+] add IJulia
+add Catlab
+#+end_src

@@ -12,3 +12,7 @@ julia
 ] add IJulia
 add Catlab
 #+end_src
+
+* Cool Julia packages
+
+https://fluxml.ai/

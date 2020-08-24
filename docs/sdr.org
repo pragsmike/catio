@@ -50,12 +50,32 @@ Part of [[http://www.pothosware.com/][pothos]].
  support toolkits.
 
  
+* [[https://redhawksdr.org/][RedHawk]]
+  
+  RedHawk is an "enterprise" implementation of composable SDR blocks.
+  Besides the obvious implementation of composable blocks, RedHawk
+  is concerned with practical issues that arise when systems are large,
+  distributed, and long-lived.
+  
+  RedHawk is based on technologies current in the early 2000's,
+  such as Java/CORBA, XML, Eclipse.  At this writing, nearly
+  20 years later, most new development uses other choices.
+  
+  From [[https://redhawksdr.org/2.2.6/manual/][RedHawk 2.2.6 manual]]:
+
+  REDHAWK is a software framework designed to support the design, development,
+  deployment, management, upgrade, and recycling of real-time distributed
+  applications as well as the systems that run them.
+
+  
+
 * Others
   
 [[https://github.com/ha7ilm/csdr][csdr]] is a command line tool to carry out DSP tasks for Software Defined Radio.
 It can be used to build simple signal processing flow graphs, right from the
 command line.
- 
+
+
 [[https://batchdrake.github.io/SigDigger/][SigDigger]]
 
 [[https://github.com/kpreid/shinysdr][ShinySDR]]

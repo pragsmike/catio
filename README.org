@@ -238,7 +238,15 @@ Most receivers don't offer a way to decode these signals.
 
 [[https://www.cs.cornell.edu/~avh/diospyros-lctes-2020.pdf][Diospyros, compiler optimizing data layout in DSPs]]
 
+[[https://wiki.gnuradio.org/index.php/Guided_Tutorial_PSK_Demodulation][GNUradio Guided Tutorial: PSK Demodulation]]
 
+[[https://en.wikipedia.org/wiki/Bit_error_rate][Bit Error Rate]]
+
+[[https://www.gnuradio.org/blog/2016-11-02-bit-error-rate-testing/][BER Testing in GR]]
+
+[[https://en.wikipedia.org/wiki/Signal-flow_graph][Signal Flow Graph]]
+
+[[https://arxiv.org/pdf/2003.06214.pdf][Comb Diagrams for Discrete-time Feedback]]
 
 * SDR models using ACT
 
@@ -260,6 +268,32 @@ Most receivers don't offer a way to decode these signals.
    The flowgraphs can be seen as morphisms in a monoidal 
    category.
 
+   Traditionally, these have been treated according to theory,
+   formulated by Shannon, under the name [[https://en.wikipedia.org/wiki/Signal-flow_graph][signal-flow graph]]. These
+   structures have an algebra of operations that transform graphs into
+   others that have the same overall effect.
+   
+   These transformations can help when realizing digital filters. For
+   instance, a flowgraph describing digital filter can be constructed
+   from a difference equation in a straightforward way. However, a
+   direct implementation of that flowgraph may be inefficient, or it may
+   be numerically unstable due to finite computer word lengths.
+   
+   By applying flowgraph transformations (algebraic operations), it is
+   often possible to produce an equivalent realization of the equation
+   that is feasible and stable. [Antoniou; Oppenheim & Shafer]
+   
+   Transforming from the "pure math" domain of infinite-precision
+   real numbers to the "practical hardware" domain of finite word-length
+   numbers seems to be related to some adjunctions (galois connections)
+   between integers and reals.  The functors are
+   the inclusion of the integers into the reals, which has left
+   adjoint (ceiling) and right adjoint (floor).
+   
+   It seems that signal-flow graph transformations are akin to the
+   wiring diagram algebras of ACT. See
+   [[https://www.youtube.com/watch?v=dEDtaJhgQOY][ACT@UCR Seminar: Systems as Wiring Diagram Algebras - Christina Vasilakopoulou]]
+
 ** How to represent control plane in an SDR model?
    
    The control plane allows a system to dynamically control its
@@ -273,7 +307,12 @@ Most receivers don't offer a way to decode these signals.
    that process streams of signal samples, when they encounter
    a specially-marked sample placed there by an earlier stage
    in the flow graph.
-
+   
+   [[https://www.vita.com/resources/Documents/Articles/IEEE%20CAS%20Mag%202012.pdf][VITA-49]] is a standard that specifies how SDR hardware interfaces with
+   the DSP software. The hardware produces and consumes one or more
+   streams of samples (the data plane), along with blocks of status and
+   configuration data (the control plane).
+     
 * Todos
 
 ** TODO Parse GRC YAML format, new in GR 3.8

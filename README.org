@@ -248,6 +248,11 @@ Most receivers don't offer a way to decode these signals.
 
 [[https://arxiv.org/pdf/2003.06214.pdf][Comb Diagrams for Discrete-time Feedback]]
 
+[[https://www.opencpi.org/][OpenCPI]] Component Portability Infrastructure, supports components targeted to
+heterogeneous runtime environments such as CPUs, GPUs, FPGAs
+
+[[https://www.youtube.com/watch?v=CriLitW5vtM][OpenCPI & GNU Radio Integration for Heterogeneous Processing - David Pocratsky, GRCon 17]]
+
 * SDR models using ACT
 
   synthesizer patch bay is a monoidal category

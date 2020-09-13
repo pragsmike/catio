@@ -253,6 +253,15 @@ heterogeneous runtime environments such as CPUs, GPUs, FPGAs
 
 [[https://www.youtube.com/watch?v=CriLitW5vtM][OpenCPI & GNU Radio Integration for Heterogeneous Processing - David Pocratsky, GRCon 17]]
 
+
+https://www.cs.ru.nl/B.Jacobs/PAPERS/ProbabilisticReasoning.pdf
+
+* Datasets
+
+  SigMF
+  
+  [[https://www.gb.nrao.edu/20m/peak/PSU_HYJ5092_L39_B-12_SMITHCLOU/Skynet_57058_psu_hyj5092_L39_B-12_SmithClou_12079_12902.spect.cyb.txt][Example NRAO metadata]]
+
 * SDR models using ACT
 
   synthesizer patch bay is a monoidal category

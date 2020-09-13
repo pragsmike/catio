@@ -42,6 +42,8 @@ function Erfc(x)
     0.5 * erfc(x/sqrt(2))
 end
 
+ber_signal = Node(0.0)
+
 function main()
     global bitcount = 0
     global errors = 0
@@ -55,14 +57,12 @@ function main()
     σ = sqrt(μ*(1-chanErrProb))
     dev = (errors - μ)/σ
     xp = string(μ,  " ± ", σ)
+    ber = errors/bitcount
+    ber_signal[] = ber
     println("error prob ", chanErrProb)
     println("Expected errors ", xp)
-    println("Bits ", bitcount, " Errors ", errors, " BER ", errors/bitcount)
+    println("Bits ", bitcount, " Errors ", errors, " BER ", ber)
     println("Deviance ", dev)
-end
-
-function g(μ,σ, x)
-    (1/(noise_σ*sqrt(2pi)))*exp(-0.5*(x/noise_σ)^2)
 end
 
 numsamps = 1000000
@@ -71,13 +71,24 @@ W = 3
 s = 0.5*W*numsamps/(bins*noise_a)
 
 xrange = range(-W/2,W/2,length=bins)
+
 y = map(x -> channel(gen()), 1:numsamps)
-#y = rand(noise_dist, numsamps)
 h = fit(Histogram, y,  xrange, closed=:left)
 scene = plot(h)
 
 lines!(scene, xrange, s*(1/(noise_σ*sqrt(2pi)))*map(x->exp(-0.5*(x/(noise_a*noise_σ))^2),xrange), color=:red)
 lines!(scene, xrange, s*(1/(noise_σ*sqrt(2pi)))*map(x->exp(-0.5*((x-1)/(noise_a*noise_σ))^2),xrange), color=:green)
 
+
+s1, a = textslider(-2:0.1:2, "a", start = 0.5)
+lines!(scene, lift(x->[x,x], a), [0,3000], color=:red)
+
+ts = timeseries(ber_signal, history = 30)
+
+scene = hbox(scene, s1,ts)
 display(scene)
 main()
+
+# can histograms be added to?
+# reconcile the erf definition with what works empirically.
+# add a threshold indicator line to the plot.

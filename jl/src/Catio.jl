@@ -1,6 +1,9 @@
 module Catio
-using FFTW, PyPlot, DSP,Test,Printf
+using FFTW, DSP, Printf
+
+export newMA, dofile,add!,get,newSpectro
 
 include("specavg.jl")
+include("spec.jl")
 
 end

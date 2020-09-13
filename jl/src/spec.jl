@@ -1,12 +1,16 @@
-using FFTW, PyPlot, DSP, Printf
+using FFTW, DSP, Printf
 
-infn = "/home/mg/Documents/signals/gqrx_20200719_185425_454350100_1200000_fc.raw"
-outfn = "/tmp/fft_frames"
+struct Spectro
+    window::Array{Float32}
+end
 
-const num_bins = 2048
+function newSpectro(num_bins)
+    return Spectro(DSP.Windows.hanning(num_bins, padding=0, zerophase=false))
+end
 
-function dofile(infn, outfn)
-    window = DSP.Windows.hanning(num_bins, padding=0, zerophase=false)
+function dofile(spectro::Spectro, infn, outfn)
+    window = spectro.window
+    num_bins = length(window)
     samps = Array{ComplexF32}(undef, num_bins)
     magbins = Array{Float32}(undef, num_bins)
     open(infn) do f
@@ -31,4 +35,3 @@ function dofile(infn, outfn)
     end
 end
 
-@time dofile(infn, outfn)

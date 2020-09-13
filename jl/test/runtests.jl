@@ -2,5 +2,5 @@ using Catio
 using Test
 
 @testset "Catio Tests" begin
-    include.(["specavg.jl"])
+    include.(["spec.jl","specavg.jl"])
 end

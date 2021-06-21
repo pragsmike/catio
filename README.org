@@ -254,7 +254,9 @@ heterogeneous runtime environments such as CPUs, GPUs, FPGAs
 [[https://www.youtube.com/watch?v=CriLitW5vtM][OpenCPI & GNU Radio Integration for Heterogeneous Processing - David Pocratsky, GRCon 17]]
 
 
-https://www.cs.ru.nl/B.Jacobs/PAPERS/ProbabilisticReasoning.pdf
+[[https://www.cs.ru.nl/B.Jacobs/PAPERS/ProbabilisticReasoning.pdf][Probabilistic Reasoning]], Bart Jacobs
+
+[[https://www.youtube.com/watch?v=mUqXwqM9ASQ][Overview of gr-inspector A Signal Analysis Toolbox for GNU Radio]]
 
 * Datasets
 

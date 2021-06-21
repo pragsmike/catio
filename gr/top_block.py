@@ -36,7 +36,6 @@ from gnuradio import eng_notation
 from gnuradio.qtgui import Range, RangeWidget
 import osmosdr
 import time
-
 from gnuradio import qtgui
 
 class top_block(gr.top_block, Qt.QWidget):
@@ -348,7 +347,6 @@ class top_block(gr.top_block, Qt.QWidget):
         self.connect((self.osmosdr_source_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
 
-
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "top_block")
         self.settings.setValue("geometry", self.saveGeometry())
@@ -441,8 +439,6 @@ class top_block(gr.top_block, Qt.QWidget):
 
 
 
-
-
 def main(top_block_cls=top_block, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
@@ -451,9 +447,7 @@ def main(top_block_cls=top_block, options=None):
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()
-
     tb.start()
-
     tb.show()
 
     def sig_handler(sig=None, frame=None):
@@ -469,9 +463,9 @@ def main(top_block_cls=top_block, options=None):
     def quitting():
         tb.stop()
         tb.wait()
-
     qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
+
 
 if __name__ == '__main__':
     main()

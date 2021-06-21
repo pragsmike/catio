@@ -150,11 +150,12 @@ There appears to be another driver at SDRPlay [[https://www.sdrplay.com/docs/gr-
   https://github.com/gnuradio/gnuradio
   
 #+begin_src sh
+  sudo apt install python-is-python3
   sudo apt install python3-pip
   sudo -H pip3 install PyBOMBS
   pybombs auto-config
   pybombs recipes add-defaults
-  pybombs prefix init ~/gnuradio -R gnuradio-default
+  pybombs prefix init ~/prefix-3.8 -R gnuradio-default
 
   pybombs install gr-osmosdr
 #+end_src
@@ -165,11 +166,20 @@ PyBOMBS - INFO - PyBOMBS Version 2.3.3
 PyBOMBS.auto-config - INFO - Using config file: None
 #+end_src
 
+Don't insist on building everything from source.
+From [[https://github.com/gnuradio/pybombs#inst_pkg][pybombs page]]:
+#+begin_src sh
+pybombs config --package gnuradio forcebuild False
+pybombs config --package libvolk forcebuild False
+pybombs config --package bladeRF forcebuild False
+pybombs config --package rtl-sdr forcebuild False
+#+end_src
+
+** configure to use python 3.6 instead of 2.6
+   
 Edit =~/gnuradio/setup_env.sh=:
    * add to PYTHONPATH =~/gnuradio/lib/python3/dist-packages=
    * Change 2.6 to 3.6 in PYTHONPATH
-
-
 
 
 On Ubuntu, apparently

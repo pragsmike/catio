@@ -1,37 +1,36 @@
 using FFTW, DSP, Printf
 
-struct Spectro
+
+struct Spectro <: Block
+    num_bins::Int
     window::Array{Float32}
+    samps::Array{ComplexF32}
+    magbins::Array{Float32}
 end
 
 function newSpectro(num_bins)
-    return Spectro(DSP.Windows.hanning(num_bins, padding=0, zerophase=false))
+    return Spectro(
+        num_bins,
+        DSP.Windows.hanning(num_bins, padding=0, zerophase=false),
+        Array{ComplexF32}(undef, num_bins),
+        Array{Float32}(undef, num_bins)
+    )
 end
 
-function dofile(spectro::Spectro, infn, outfn)
-    window = spectro.window
-    num_bins = length(window)
-    samps = Array{ComplexF32}(undef, num_bins)
-    magbins = Array{Float32}(undef, num_bins)
-    open(infn) do f
-        open(outfn, "w") do fbins
-            for i in 1:6000000
-                try
-                    read!(f, samps)
-                catch
-                    @printf("Input ended after reading %i frames\n", i)
-                    break
-                end
-                samps .= window .*samps
-                fft!(samps)
-                bins = fftshift(samps)
-                magbins .= abs2.(bins)
-                write(fbins, magbins)
-                if i % 25000 == 0
-                    println(magbins[18])
-                end
-            end
-        end
-    end
+function tick(spectro::Spectro)
+    spectro.samps .= spectro.window .*spectro.samps
+    fft!(spectro.samps)
+    bins = fftshift(spectro.samps)
+    spectro.magbins .= abs2.(bins)
+end
+
+function getInputBuffer(spectro::Spectro)
+    return spectro.samps
+end
+function getOutputBuffer(spectro::Spectro)
+    return spectro.magbins
+end
+function progressString(spectro::Spectro)
+    return string(spectro.magbins[18])
 end
 

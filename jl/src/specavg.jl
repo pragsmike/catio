@@ -31,7 +31,7 @@ function get(ma::MA)
     return ma.avgmagbins
 end
 
-function dofile(ma, infn, outfn)
+function dofile(ma::MA, infn, outfn)
     num_bins = length(ma.avgmagbins)
     magbins = Array{Float32}(undef, num_bins)
     open(infn) do inf

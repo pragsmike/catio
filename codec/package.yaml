@@ -28,13 +28,13 @@ dependencies:
 - aeson >= 1.4.2.0
 
 library:
-  source-dirs: src/lua
+  source-dirs: src
 
 
 executables:
   catio-exe:
     main:                Main.hs
-    source-dirs:         src/lua
+    source-dirs:         src
     ghc-options:
     - -threaded
     - -rtsopts

@@ -1,0 +1,610 @@
+* Environment
+  
+   On Ubuntu 20.04 =/usr/bin/python= is Python 3.8.5.
+   #+begin_src 
+   sudo add-apt-repository ppa:gnuradio/gnuradio-releases
+   #+end_src
+
+* Installing from PyBOMBS
+
+** Installing pybombs
+   [[https://github.com/gnuradio/pybombs][gnuradio/pybombs]] says to do this to make sure you're using the right version.
+  
+   #+begin_src sh
+     sudo pip uninstall pybombs
+     sudo apt install python3
+     sudo apt install python3-pip
+     sudo pip3 install --upgrade git+https://github.com/gnuradio/pybombs.git
+   #+end_src
+
+** Setup pybombs 
+
+   You only need to do these once.
+   Use Python 3.8 instead of 3.6.
+    #+begin_src sh
+      sudo apt remove libpython3.6
+      sudo apt remove libpython3.6-stdlib
+      sudo apt remove libpython3.6-minimal
+      sudo apt remove python3-tk
+      sudo rm -rf /usr/lib/python3.6
+      exec bash
+    #+end_src
+ 
+   #+begin_src 
+     pybombs auto-config
+     pybombs recipes add-defaults
+   #+end_src
+
+** Running pybombs to install gnuradio
+
+   These are the recipes you can give to the =-R= option:
+   
+   | gnuradio37       | gnuradio maint-3.7         |
+   | gnuradio38       | gnuradio maint-3.8         |
+   | gnuradio-default | gnuradio 3.8, gqrx         |
+   | gnuradio         | gnuradio maint-3.8 libvolk |
+   | gnuradio-master  | gnuradio master, grqx      |
+   | gnuradio-stable  | maint-3.7 uhd-3.15.LTS     |
+   
+*** gnuradio-default
+    This builds gr3.8 and gqrx.  Maybe this will work with python 3.8?
+
+   #+begin_src sh
+      pybombs prefix init ~/gr/gnuradio-default -R gnuradio-default
+      cd ~/gr/gnuradio-default
+      source ~/gr/gnuradio-default/setup_env.sh
+      pybombs install gqrx
+   #+end_src
+
+
+*** gnuradio-master 
+   #+begin_src sh
+     cd ~/gr/gnuradio-master
+     rm -rf src/gnuradio/
+     pybombs prefix init   
+     pybombs install gnuradio
+     
+     pybombs prefix init ~/gr/gnuradio-master -R gnuradio-master
+     source ~/gr/gnuradio-master/setup_env.sh
+   #+end_src
+
+   It worked!
+
+** misc
+   
+   [[https://github.com/gnuradio/pybombs][gnuradio/pybombs]] says that "gnuradio-default builds maint-3.8". Is that still
+   true? That is in fact true, as
+   =~/.pybombs/recipes/gr-recipes/gnuradio-default.lwr= does specify =deps:
+   gnuradio=, and =~/.pybombs/recipes/gr-recipes/gnuradio.lwr= specifies
+   =gitbranch: maint-3.8=.
+   
+   =pybombs git make-ref= fails, complaining about missing "inventory" item.
+   Is this vestigial?  It seems that pybombs already keeps local git caches of things
+   in the gitcache directory.
+ 
+** install gqrx
+     
+   Gnuradio 3.9 is stable. It drops swig and uses pybind, so OOTs needs some
+   changes. There is [[https://wiki.gnuradio.org/index.php/GNU_Radio_3.9_OOT_Module_Porting_Guide][guide to porting OOT modules to gr3.9]].
+
+** References
+   
+  [[http://linux.topology.org/rtlsdr.html][topology.org rtlsdr page]] has some good notes on building gnuradio
+  and fixing glitches in the build.
+
+  [[https://github.com/gnuradio/pybombs][gnuradio/pybombs]] 
+  
+** mg log
+
+   gqrx does build using pybombs recipe gnuradio-default. I edited the
+   =.pybombs/config.yaml= file to set some of the modules (libvolk, uhd,
+   bladeRF) not to build from source, but to use the available binary.
+   
+   The build succeeded, but the result doesn't work. The resulting
+   =gqrx= binary starts up and shows the GUI, and it recognizes the
+   hardware. Clicking the Start DSP button has no visible effect,
+   though.
+
+   OMG.  Set =Demod= to other than =None=.  Then it works.
+
+   This is with these =.pybombs/config.yaml= settings:
+   #+begin_src yaml
+    gnuradio:
+      forcebuild: true
+    uhd:
+      forcebuild: false
+    libvolk:
+      forcebuild: false
+    rtl-sdr:
+      forcebuild: true
+    bladeRF:
+      forcebuild: false
+    gqrx:
+      forcebuild: true
+   #+end_src
+
+   Next try:
+   Remove the binary installations of those things and build with forcebuild true for those.
+
+   #+begin_src sh
+     sudo apt remove -y libvolk2-bin libvolk2-dev:amd64 libvolk2.2:amd64 libvolk2.4:amd64                 
+     sudo apt remove -y bladerf bladerf-fpga-hostedxa9 libbladerf-udev:amd64 libbladerf2:amd64 soapysdr0.7-module-bladerf:amd64              
+     sudo apt remove -y libgnuradio-pmt3.8.1:amd64
+     sudo apt remove -y rtl-sdr
+     
+   #+end_src
+   
+*** gqrx with gnuradio 3.9   
+    
+   I decided not to try to use gr3.9 for gqrx.
+  
+   gqrx fails to compile with gr3.9 because gnuradio 3.9 has a new network
+   subsystem (TCP and UDP), so =udp_sink.h= is in a different place.
+   
+   The [[https://github.com/gnuradio/gnuradio/commit/cc37c3e8cd5eabcb5c9d919e5fffc5d938690140#diff-99c34be43a91b85b81679f553ae27ad5b2dcdbdfbb7be00565d5d157796def0a][PR]] says that it's not backward-compatible, so gqrx would have to be
+   patched.
+
+   Didn't have to edit =~/gr/gnuradio-master/setup_env.sh= as the correct
+   directories are already in PYTHONPATH:
+   * =~/gr/gnuradio-master/lib/python3/dist-packages=
+
+
+   Build of gnuradio fails
+#+begin_src 
+-- User set python executable /usr/bin/python3.6
+-- Found PythonInterp: /usr/bin/python3.6 (found suitable version "3.6.9", minimum required is "3.6.5") 
+-- Could NOT find PythonLibs (missing: PYTHON_LIBRARIES PYTHON_INCLUDE_DIRS) (Required is exact version "3.6")
+Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+ImportError: cannot import name 'sysconfig'
+CMake Error at cmake/Modules/GrPython.cmake:130 (file):
+#+end_src
+
+[[https://github.com/gnuradio/gnuradio/issues/3273][Issue 3273]] says:
+#+begin_quote
+The latest version of pybombs should install python3-dev package and resolve
+this problem.
+#+end_quote
+
+I did
+#+begin_src sh
+sudo apt install python3-dev
+#+end_src
+but still got the same error =missing: PYTHON_LIBRARIES PYTHON_INCLUDE_DIRS=
+
+Added to =prefix-3.9/setup_env.sh=:
+#+begin_src 
+export PYTHON_LIBRARIES="-lcrypt -lpthread -ldl  -lutil -lm -lm"
+export PYTHON_INCLUDE_DIRS=/usr/include/python3.8
+#+end_src
+
+cmake .. \
+-DPYTHON_INCLUDE_DIR=$(python -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())")  \
+-DPYTHON_LIBRARY=$(python -c "import distutils.sysconfig as sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+or
+-DPYTHON_LIBRARY=$(python -c "import distutils.sysconfig as sysconfig; import os; print(os.path.join(sysconfig.get_config_var('LIBDIR'), sysconfig.get_config_var('LDLIBRARY')))")
+
+PYTHON_INCLUDE_DIR=/usr/include/python3.8
+PYTHON_LIBRARY=/usr/lib/libpython3.8.so
+
+
+[[https://github.com/spillai/numpy-opencv-converter/issues/6][numpy-opencv-convert issue 6]] suggests this, but they're already installed.
+#+begin_src 
+sudo apt-get install python3-dev python3-pip python3-tk python3-lxml python3-six
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+python3-dev is already the newest version (3.8.2-0ubuntu2).
+python3-six is already the newest version (1.14.0-2).
+python3-lxml is already the newest version (4.5.0-1ubuntu0.3).
+python3-tk is already the newest version (3.8.10-0ubuntu1~20.04).
+python3-tk set to manually installed.
+python3-pip is already the newest version (20.0.2-5ubuntu1.5).
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+#+end_src
+
+=/home/mg/prefix-3.9/src/gnuradio/build/CMakeFiles/CMakeError.log=
+#+begin_src 
+/usr/bin/ld: cannot find -lpthreads
+...
+src.c:(.text+0x46): undefined reference to `pthread_create'
+#+end_src
+
+[[https://github.com/gnuradio/pybombs/issues/529][pybombs issue 529]] suggests to add =python3-mako= and =python3-numpy=
+#+begin_src 
+pip install python3-mako python3-numpy 
+#+end_src
+
+* PyBOMBS packages
+
+  =pybombs recipes list=
+#+begin_src 
+Package Name            Recipe Filename                                                               Installed By   
+---------------------------------------------------------------------------------------------------------------------
+XFDMSync                ~/.pybombs/recipes/gr-etcetera/XFDMSync.lwr                                   -              
+acarsdec                ~/.pybombs/recipes/gr-etcetera/acarsdec.lwr                                   -              
+airprobe                ~/.pybombs/recipes/gr-etcetera/airprobe.lwr                                   -              
+airspy                  ~/.pybombs/recipes/gr-recipes/airspy.lwr                                      -              
+airspyhf                ~/.pybombs/recipes/gr-recipes/airspyhf.lwr                                    -              
+alsa                    ~/.pybombs/recipes/gr-recipes/alsa.lwr                                        apt,pkgconfig  
+apache-thrift           ~/.pybombs/recipes/gr-recipes/apache-thrift.lwr                               -              
+apr                     ~/.pybombs/recipes/gr-etcetera/apr.lwr                                        -              
+aprutil                 ~/.pybombs/recipes/gr-etcetera/aprutil.lwr                                    -              
+armadillo               ~/.pybombs/recipes/gr-recipes/armadillo.lwr                                   -              
+atk                     ~/.pybombs/recipes/gr-recipes/atk.lwr                                         apt            
+autoconf                ~/.local/lib/python3.8/site-packages/pybombs/recipes/autoconf.lwr             apt,cmd        
+automake                ~/.local/lib/python3.8/site-packages/pybombs/recipes/automake.lwr             apt,cmd        
+autotools-bootstrap     ~/.local/lib/python3.8/site-packages/pybombs/recipes/autotools-bootstrap.lwr  apt,cmd        
+bison                   ~/.pybombs/recipes/gr-recipes/bison.lwr                                       -              
+bladeRF                 ~/.pybombs/recipes/gr-recipes/bladeRF.lwr                                     -              
+blas                    ~/.pybombs/recipes/gr-recipes/blas.lwr                                        -              
+bokeh                   ~/.pybombs/recipes/gr-recipes/bokeh.lwr                                       -              
+boost                   ~/.pybombs/recipes/gr-recipes/boost.lwr                                       apt            
+build-essential         ~/.local/lib/python3.8/site-packages/pybombs/recipes/build-essential.lwr      apt,cmd        
+cairo                   ~/.pybombs/recipes/gr-recipes/cairo.lwr                                       apt            
+cheetah                 ~/.pybombs/recipes/gr-recipes/cheetah.lwr                                     -              
+cmake                   ~/.local/lib/python3.8/site-packages/pybombs/recipes/cmake.lwr                apt,cmd        
+cmake3                  ~/.pybombs/recipes/gr-recipes/cmake3.lwr                                      apt,cmd        
+cppunit                 ~/.pybombs/recipes/gr-recipes/cppunit.lwr                                     apt            
+csdr                    ~/.pybombs/recipes/gr-etcetera/csdr.lwr                                       -              
+curl                    ~/.pybombs/recipes/gr-recipes/curl.lwr                                        apt,cmd        
+cython                  ~/.pybombs/recipes/gr-etcetera/cython.lwr                                     -              
+dateutil                ~/.pybombs/recipes/gr-recipes/dateutil.lwr                                    -              
+db48                    ~/.pybombs/recipes/gr-etcetera/db48.lwr                                       -              
+doxygen                 ~/.pybombs/recipes/gr-recipes/doxygen.lwr                                     apt,cmd        
+dump1090                ~/.pybombs/recipes/gr-etcetera/dump1090.lwr                                   -              
+expat                   ~/.pybombs/recipes/gr-recipes/expat.lwr                                       apt            
+faac                    ~/.pybombs/recipes/gr-recipes/faac.lwr                                        -              
+faad                    ~/.pybombs/recipes/gr-recipes/faad.lwr                                        -              
+ffi                     ~/.pybombs/recipes/gr-recipes/ffi.lwr                                         apt            
+fftw                    ~/.pybombs/recipes/gr-recipes/fftw.lwr                                        pkgconfig      
+flex                    ~/.pybombs/recipes/gr-recipes/flex.lwr                                        -              
+fontconfig              ~/.pybombs/recipes/gr-recipes/fontconfig.lwr                                  apt            
+freetype                ~/.pybombs/recipes/gr-recipes/freetype.lwr                                    apt            
+gcc                     ~/.pybombs/recipes/gr-recipes/gcc.lwr                                         apt,cmd        
+gdk-pixbuf              ~/.pybombs/recipes/gr-recipes/gdk-pixbuf.lwr                                  apt            
+gflags                  ~/.pybombs/recipes/gr-recipes/gflags.lwr                                      -              
+gfortran                ~/.pybombs/recipes/gr-recipes/gfortran.lwr                                    apt,cmd        
+git                     ~/.local/lib/python3.8/site-packages/pybombs/recipes/git.lwr                  apt,cmd        
+glfw3                   ~/.pybombs/recipes/gr-recipes/glfw3.lwr                                       apt            
+glib                    ~/.pybombs/recipes/gr-recipes/glib.lwr                                        apt            
+glog                    ~/.pybombs/recipes/gr-recipes/glog.lwr                                        -              
+glut                    ~/.pybombs/recipes/gr-etcetera/glut.lwr                                       -              
+gmp                     ~/.pybombs/recipes/gr-recipes/gmp.lwr                                         apt            
+gnss-sdr                ~/.pybombs/recipes/gr-recipes/gnss-sdr.lwr                                    -              
+gnuradio                ~/.pybombs/recipes/gr-recipes/gnuradio.lwr                                    -              
+gnuradio37              ~/.pybombs/recipes/gr-recipes/gnuradio37.lwr                                  -              
+gnuradio38              ~/.pybombs/recipes/gr-recipes/gnuradio38.lwr                                  -              
+gnutls                  ~/.pybombs/recipes/gr-recipes/gnutls.lwr                                      -              
+gobject-introspection   ~/.pybombs/recipes/gr-recipes/gobject-introspection.lwr                       apt            
+gperftools              ~/.pybombs/recipes/gr-recipes/gperftools.lwr                                  -              
+gqrx                    ~/.pybombs/recipes/gr-recipes/gqrx.lwr                                        -              
+gqrx-digital            ~/.pybombs/recipes/gr-etcetera/gqrx-digital.lwr                               -              
+gr-acars2               ~/.pybombs/recipes/gr-etcetera/gr-acars2.lwr                                  -              
+gr-adsb                 ~/.pybombs/recipes/gr-recipes/gr-adsb.lwr                                     -              
+gr-aep                  ~/.pybombs/recipes/gr-etcetera/gr-aep.lwr                                     -              
+gr-air-modes            ~/.pybombs/recipes/gr-recipes/gr-air-modes.lwr                                -              
+gr-ais                  ~/.pybombs/recipes/gr-recipes/gr-ais.lwr                                      -              
+gr-aistx                ~/.pybombs/recipes/gr-etcetera/gr-aistx.lwr                                   -              
+gr-ale                  ~/.pybombs/recipes/gr-etcetera/gr-ale.lwr                                     -              
+gr-ambe3000             ~/.pybombs/recipes/gr-etcetera/gr-ambe3000.lwr                                -              
+gr-analysis             ~/.pybombs/recipes/gr-etcetera/gr-analysis.lwr                                -              
+gr-ax25                 ~/.pybombs/recipes/gr-etcetera/gr-ax25.lwr                                    -              
+gr-baz                  ~/.pybombs/recipes/gr-recipes/gr-baz.lwr                                      -              
+gr-benchmark            ~/.pybombs/recipes/gr-etcetera/gr-benchmark.lwr                               -              
+gr-binviz               ~/.pybombs/recipes/gr-etcetera/gr-binviz.lwr                                  -              
+gr-bluetooth            ~/.pybombs/recipes/gr-recipes/gr-bluetooth.lwr                                -              
+gr-bokehgui             ~/.pybombs/recipes/gr-recipes/gr-bokehgui.lwr                                 -              
+gr-bruninga             ~/.pybombs/recipes/gr-etcetera/gr-bruninga.lwr                                -              
+gr-burst                ~/.pybombs/recipes/gr-recipes/gr-burst.lwr                                    -              
+gr-ccsds                ~/.pybombs/recipes/gr-etcetera/gr-ccsds.lwr                                   -              
+gr-cdma                 ~/.pybombs/recipes/gr-recipes/gr-cdma.lwr                                     -              
+gr-cessb                ~/.pybombs/recipes/gr-etcetera/gr-cessb.lwr                                   -              
+gr-clenabled            ~/.pybombs/recipes/gr-etcetera/gr-clenabled.lwr                               -              
+gr-compat               ~/.pybombs/recipes/gr-recipes/gr-compat.lwr                                   -              
+gr-correctiq            ~/.pybombs/recipes/gr-etcetera/gr-correctiq.lwr                               -              
+gr-corrsounder          ~/.pybombs/recipes/gr-etcetera/gr-corrsounder.lwr                             -              
+gr-csp                  ~/.pybombs/recipes/gr-etcetera/gr-csp.lwr                                     -              
+gr-dab                  ~/.pybombs/recipes/gr-etcetera/gr-dab.lwr                                     -              
+gr-dect2                ~/.pybombs/recipes/gr-etcetera/gr-dect2.lwr                                   -              
+gr-display              ~/.pybombs/recipes/gr-recipes/gr-display.lwr                                  -              
+gr-doa                  ~/.pybombs/recipes/gr-etcetera/gr-doa.lwr                                     -              
+gr-drm                  ~/.pybombs/recipes/gr-recipes/gr-drm.lwr                                      -              
+gr-dsd                  ~/.pybombs/recipes/gr-etcetera/gr-dsd.lwr                                     -              
+gr-dvbs2                ~/.pybombs/recipes/gr-etcetera/gr-dvbs2.lwr                                   -              
+gr-dvbt                 ~/.pybombs/recipes/gr-etcetera/gr-dvbt.lwr                                    -              
+gr-dvbt2                ~/.pybombs/recipes/gr-etcetera/gr-dvbt2.lwr                                   -              
+gr-eb200                ~/.pybombs/recipes/gr-etcetera/gr-eb200.lwr                                   -              
+gr-elster               ~/.pybombs/recipes/gr-etcetera/gr-elster.lwr                                  -              
+gr-ettus                ~/.pybombs/recipes/gr-recipes/gr-ettus.lwr                                    -              
+gr-eventstream          ~/.pybombs/recipes/gr-recipes/gr-eventstream.lwr                              -              
+gr-fbmc                 ~/.pybombs/recipes/gr-etcetera/gr-fbmc.lwr                                    -              
+gr-fcdproplus           ~/.pybombs/recipes/gr-recipes/gr-fcdproplus.lwr                               -              
+gr-fhss_utils           ~/.pybombs/recipes/gr-etcetera/gr-fhss_utils.lwr                              -              
+gr-filerepeater         ~/.pybombs/recipes/gr-etcetera/gr-filerepeater.lwr                            -              
+gr-finite-stream        ~/.pybombs/recipes/gr-etcetera/gr-finite-stream.lwr                           -              
+gr-flarm                ~/.pybombs/recipes/gr-etcetera/gr-flarm.lwr                                   -              
+gr-flexfft              ~/.pybombs/recipes/gr-etcetera/gr-flexfft.lwr                                 -              
+gr-fm0                  ~/.pybombs/recipes/gr-etcetera/gr-fm0.lwr                                     -              
+gr-foo                  ~/.pybombs/recipes/gr-recipes/gr-foo.lwr                                      -              
+gr-fosphor              ~/.pybombs/recipes/gr-recipes/gr-fosphor.lwr                                  -              
+gr-framers              ~/.pybombs/recipes/gr-etcetera/gr-framers.lwr                                 -              
+gr-fsk-burst            ~/.pybombs/recipes/gr-recipes/gr-fsk-burst.lwr                                -              
+gr-gfdm                 ~/.pybombs/recipes/gr-etcetera/gr-gfdm.lwr                                    -              
+gr-gmuground            ~/.pybombs/recipes/gr-etcetera/gr-gmuground.lwr                               -              
+gr-gpredict-doppler     ~/.pybombs/recipes/gr-etcetera/gr-gpredict-doppler.lwr                        -              
+gr-grnet                ~/.pybombs/recipes/gr-etcetera/gr-grnet.lwr                                   -              
+gr-gsm                  ~/.pybombs/recipes/gr-etcetera/gr-gsm.lwr                                     -              
+gr-guiextra             ~/.pybombs/recipes/gr-etcetera/gr-guiextra.lwr                                -              
+gr-guitar               ~/.pybombs/recipes/gr-etcetera/gr-guitar.lwr                                  -              
+gr-gwncppvgb            ~/.pybombs/recipes/gr-etcetera/gr-gwncppvgb.lwr                               -              
+gr-ham                  ~/.pybombs/recipes/gr-etcetera/gr-ham.lwr                                     -              
+gr-hpsdr                ~/.pybombs/recipes/gr-etcetera/gr-hpsdr.lwr                                   -              
+gr-hrpt                 ~/.pybombs/recipes/gr-etcetera/gr-hrpt.lwr                                    -              
+gr-ieee-80211           ~/.pybombs/recipes/gr-recipes/gr-ieee-80211.lwr                               -              
+gr-ieee-802154          ~/.pybombs/recipes/gr-etcetera/gr-ieee-802154.lwr                             -              
+gr-iio                  ~/.pybombs/recipes/gr-recipes/gr-iio.lwr                                      -              
+gr-inspector            ~/.pybombs/recipes/gr-recipes/gr-inspector.lwr                                -              
+gr-iqbal                ~/.pybombs/recipes/gr-recipes/gr-iqbal.lwr                                    -              
+gr-iridium              ~/.pybombs/recipes/gr-etcetera/gr-iridium.lwr                                 -              
+gr-isdbt                ~/.pybombs/recipes/gr-etcetera/gr-isdbt.lwr                                   -              
+gr-keyfob               ~/.pybombs/recipes/gr-etcetera/gr-keyfob.lwr                                  -              
+gr-kiss                 ~/.pybombs/recipes/gr-etcetera/gr-kiss.lwr                                    -              
+gr-lacrosse             ~/.pybombs/recipes/gr-etcetera/gr-lacrosse.lwr                                -              
+gr-lazyviterbi          ~/.pybombs/recipes/gr-etcetera/gr-lazyviterbi.lwr                             -              
+gr-ldpc                 ~/.pybombs/recipes/gr-recipes/gr-ldpc.lwr                                     -              
+gr-lfast                ~/.pybombs/recipes/gr-etcetera/gr-lfast.lwr                                   -              
+gr-lilacsat             ~/.pybombs/recipes/gr-recipes/gr-lilacsat.lwr                                 -              
+gr-limesdr              ~/.pybombs/recipes/gr-recipes/gr-limesdr.lwr                                  -              
+gr-lora                 ~/.pybombs/recipes/gr-etcetera/gr-lora.lwr                                    -              
+gr-lora2                ~/.pybombs/recipes/gr-etcetera/gr-lora2.lwr                                   -              
+gr-lpwan                ~/.pybombs/recipes/gr-etcetera/gr-lpwan.lwr                                   -              
+gr-lte                  ~/.pybombs/recipes/gr-etcetera/gr-lte.lwr                                     -              
+gr-mac                  ~/.pybombs/recipes/gr-recipes/gr-mac.lwr                                      -              
+gr-mapper               ~/.pybombs/recipes/gr-recipes/gr-mapper.lwr                                   -              
+gr-mediatools           ~/.pybombs/recipes/gr-etcetera/gr-mediatools.lwr                              -              
+gr-mer                  ~/.pybombs/recipes/gr-etcetera/gr-mer.lwr                                     -              
+gr-mesa                 ~/.pybombs/recipes/gr-etcetera/gr-mesa.lwr                                    -              
+gr-message_tools        ~/.pybombs/recipes/gr-recipes/gr-message_tools.lwr                            -              
+gr-microtelecom         ~/.pybombs/recipes/gr-etcetera/gr-microtelecom.lwr                            -              
+gr-mixalot              ~/.pybombs/recipes/gr-etcetera/gr-mixalot.lwr                                 -              
+gr-mtb                  ~/.pybombs/recipes/gr-etcetera/gr-mtb.lwr                                     -              
+gr-mthpower             ~/.pybombs/recipes/gr-etcetera/gr-mthpower.lwr                                -              
+gr-multimon             ~/.pybombs/recipes/gr-etcetera/gr-multimon.lwr                                -              
+gr-nacl                 ~/.pybombs/recipes/gr-recipes/gr-nacl.lwr                                     -              
+gr-nmea                 ~/.pybombs/recipes/gr-recipes/gr-nmea.lwr                                     -              
+gr-nordic               ~/.pybombs/recipes/gr-etcetera/gr-nordic.lwr                                  -              
+gr-nrsc5                ~/.pybombs/recipes/gr-etcetera/gr-nrsc5.lwr                                   -              
+gr-ntsc                 ~/.pybombs/recipes/gr-etcetera/gr-ntsc.lwr                                    -              
+gr-ntsc-rc              ~/.pybombs/recipes/gr-etcetera/gr-ntsc-rc.lwr                                 -              
+gr-ofdm                 ~/.pybombs/recipes/gr-recipes/gr-ofdm.lwr                                     -              
+gr-op25                 ~/.pybombs/recipes/gr-recipes/gr-op25.lwr                                     -              
+gr-osmosdr              ~/.pybombs/recipes/gr-recipes/gr-osmosdr.lwr                                  -              
+gr-outernet             ~/.pybombs/recipes/gr-etcetera/gr-outernet.lwr                                -              
+gr-packetradio          ~/.pybombs/recipes/gr-recipes/gr-packetradio.lwr                              -              
+gr-pager                ~/.pybombs/recipes/gr-etcetera/gr-pager.lwr                                   -              
+gr-paint                ~/.pybombs/recipes/gr-recipes/gr-paint.lwr                                    -              
+gr-pcap                 ~/.pybombs/recipes/gr-etcetera/gr-pcap.lwr                                    -              
+gr-pdu_utils            ~/.pybombs/recipes/gr-etcetera/gr-pdu_utils.lwr                               -              
+gr-pico                 ~/.pybombs/recipes/gr-recipes/gr-pico.lwr                                     -              
+gr-pipe                 ~/.pybombs/recipes/gr-etcetera/gr-pipe.lwr                                    -              
+gr-pocsag               ~/.pybombs/recipes/gr-etcetera/gr-pocsag.lwr                                  -              
+gr-polaris              ~/.pybombs/recipes/gr-recipes/gr-polaris.lwr                                  -              
+gr-psk-burst            ~/.pybombs/recipes/gr-recipes/gr-psk-burst.lwr                                -              
+gr-psk31                ~/.pybombs/recipes/gr-etcetera/gr-psk31.lwr                                   -              
+gr-pyqt                 ~/.pybombs/recipes/gr-recipes/gr-pyqt.lwr                                     -              
+gr-ra_blocks            ~/.pybombs/recipes/gr-etcetera/gr-ra_blocks.lwr                               -              
+gr-radar                ~/.pybombs/recipes/gr-recipes/gr-radar.lwr                                    -              
+gr-rccar2               ~/.pybombs/recipes/gr-etcetera/gr-rccar2.lwr                                  -              
+gr-rds                  ~/.pybombs/recipes/gr-recipes/gr-rds.lwr                                      -              
+gr-reveng               ~/.pybombs/recipes/gr-etcetera/gr-reveng.lwr                                  -              
+gr-rftap                ~/.pybombs/recipes/gr-etcetera/gr-rftap.lwr                                   -              
+gr-rstt                 ~/.pybombs/recipes/gr-etcetera/gr-rstt.lwr                                    -              
+gr-rtty                 ~/.pybombs/recipes/gr-etcetera/gr-rtty.lwr                                    -              
+gr-sandia_utils         ~/.pybombs/recipes/gr-etcetera/gr-sandia_utils.lwr                            -              
+gr-satellites           ~/.pybombs/recipes/gr-recipes/gr-satellites.lwr                               -              
+gr-signal_exciter       ~/.pybombs/recipes/gr-etcetera/gr-signal_exciter.lwr                          -              
+gr-smartnet             ~/.pybombs/recipes/gr-etcetera/gr-smartnet.lwr                                -              
+gr-smithchart           ~/.pybombs/recipes/gr-etcetera/gr-smithchart.lwr                              -              
+gr-soapy                ~/.pybombs/recipes/gr-recipes/gr-soapy.lwr                                    -              
+gr-specest              ~/.pybombs/recipes/gr-recipes/gr-specest.lwr                                  -              
+gr-streamsink           ~/.pybombs/recipes/gr-etcetera/gr-streamsink.lwr                              -              
+gr-supacars             ~/.pybombs/recipes/gr-etcetera/gr-supacars.lwr                                -              
+gr-symbolmapping        ~/.pybombs/recipes/gr-etcetera/gr-symbolmapping.lwr                           -              
+gr-symbolrate           ~/.pybombs/recipes/gr-etcetera/gr-symbolrate.lwr                              -              
+gr-tagutils             ~/.pybombs/recipes/gr-recipes/gr-tagutils.lwr                                 -              
+gr-tf                   ~/.pybombs/recipes/gr-recipes/gr-tf.lwr                                       -              
+gr-theano               ~/.pybombs/recipes/gr-recipes/gr-theano.lwr                                   -              
+gr-timing_utils         ~/.pybombs/recipes/gr-etcetera/gr-timing_utils.lwr                            -              
+gr-tpms                 ~/.pybombs/recipes/gr-etcetera/gr-tpms.lwr                                    -              
+gr-tutorial             ~/.pybombs/recipes/gr-recipes/gr-tutorial.lwr                                 -              
+gr-uhdgps               ~/.pybombs/recipes/gr-etcetera/gr-uhdgps.lwr                                  -              
+gr-ysf                  ~/.pybombs/recipes/gr-etcetera/gr-ysf.lwr                                     -              
+gr-yuv2pal              ~/.pybombs/recipes/gr-etcetera/gr-yuv2pal.lwr                                 -              
+gr-zmqblocks            ~/.pybombs/recipes/gr-recipes/gr-zmqblocks.lwr                                -              
+graphviz                ~/.local/lib/python3.8/site-packages/pybombs/recipes/graphviz.lwr             apt,cmd        
+gsl                     ~/.pybombs/recipes/gr-recipes/gsl.lwr                                         apt,pkgconfig  
+gtest                   ~/.pybombs/recipes/gr-recipes/gtest.lwr                                       -              
+gtk2                    ~/.pybombs/recipes/gr-recipes/gtk2.lwr                                        apt            
+gtk3                    ~/.pybombs/recipes/gr-recipes/gtk3.lwr                                        apt,pkgconfig  
+hackrf                  ~/.pybombs/recipes/gr-recipes/hackrf.lwr                                      -              
+ice                     ~/.pybombs/recipes/gr-etcetera/ice.lwr                                        -              
+inspectrum              ~/.pybombs/recipes/gr-etcetera/inspectrum.lwr                                 -              
+kal                     ~/.pybombs/recipes/gr-etcetera/kal.lwr                                        -              
+lapack                  ~/.pybombs/recipes/gr-recipes/lapack.lwr                                      -              
+libad9361               ~/.pybombs/recipes/gr-recipes/libad9361.lwr                                   -              
+libav                   ~/.pybombs/recipes/gr-recipes/libav.lwr                                       -              
+libboost-random         ~/.pybombs/recipes/gr-etcetera/libboost-random.lwr                            apt            
+libbtbb                 ~/.pybombs/recipes/gr-recipes/libbtbb.lwr                                     -              
+libbzip                 ~/.pybombs/recipes/gr-recipes/libbzip.lwr                                     -              
+libconfig               ~/.pybombs/recipes/gr-etcetera/libconfig.lwr                                  -              
+libevent                ~/.pybombs/recipes/gr-recipes/libevent.lwr                                    apt            
+libfec                  ~/.pybombs/recipes/gr-recipes/libfec.lwr                                      -              
+libfreesrp              ~/.pybombs/recipes/gr-etcetera/libfreesrp.lwr                                 -              
+libhidapi               ~/.pybombs/recipes/gr-recipes/libhidapi.lwr                                   -              
+libiio                  ~/.pybombs/recipes/gr-recipes/libiio.lwr                                      -              
+libitpp                 ~/.pybombs/recipes/gr-recipes/libitpp.lwr                                     -              
+libjpeg                 ~/.pybombs/recipes/gr-recipes/libjpeg.lwr                                     -              
+libjsoncpp              ~/.pybombs/recipes/gr-etcetera/libjsoncpp.lwr                                 -              
+liblog4cpp              ~/.pybombs/recipes/gr-recipes/liblog4cpp.lwr                                  apt,pkgconfig  
+libmirisdr              ~/.pybombs/recipes/gr-etcetera/libmirisdr.lwr                                 -              
+libmp3lame              ~/.pybombs/recipes/gr-recipes/libmp3lame.lwr                                  -              
+libosmo-dsp             ~/.pybombs/recipes/gr-recipes/libosmo-dsp.lwr                                 -              
+libosmocore             ~/.pybombs/recipes/gr-recipes/libosmocore.lwr                                 -              
+libpcap                 ~/.pybombs/recipes/gr-recipes/libpcap.lwr                                     -              
+libperseus-sdr          ~/.pybombs/recipes/gr-recipes/libperseus-sdr.lwr                              -              
+libpng                  ~/.pybombs/recipes/gr-recipes/libpng.lwr                                      -              
+libpolarssl             ~/.pybombs/recipes/gr-recipes/libpolarssl.lwr                                 -              
+libshout                ~/.pybombs/recipes/gr-recipes/libshout.lwr                                    -              
+libsndfile              ~/.pybombs/recipes/gr-recipes/libsndfile.lwr                                  -              
+libsodium               ~/.pybombs/recipes/gr-recipes/libsodium.lwr                                   apt            
+libtalloc-dev           ~/.pybombs/recipes/gr-recipes/libtalloc-dev.lwr                               -              
+libtiff                 ~/.pybombs/recipes/gr-recipes/libtiff.lwr                                     -              
+libtool                 ~/.pybombs/recipes/gr-recipes/libtool.lwr                                     apt,cmd        
+libudev                 ~/.pybombs/recipes/gr-recipes/libudev.lwr                                     -              
+libusb                  ~/.pybombs/recipes/gr-recipes/libusb.lwr                                      apt,pkgconfig  
+libvolk                 ~/.pybombs/recipes/gr-recipes/libvolk.lwr                                     source         
+libxml                  ~/.pybombs/recipes/gr-recipes/libxml.lwr                                      -              
+libxslt                 ~/.pybombs/recipes/gr-recipes/libxslt.lwr                                     -              
+limesuite               ~/.pybombs/recipes/gr-recipes/limesuite.lwr                                   -              
+liquid-dsp              ~/.pybombs/recipes/gr-etcetera/liquid-dsp.lwr                                 -              
+lxml                    ~/.pybombs/recipes/gr-recipes/lxml.lwr                                        apt            
+make                    ~/.pybombs/recipes/gr-recipes/make.lwr                                        apt,cmd        
+mako                    ~/.pybombs/recipes/gr-recipes/mako.lwr                                        apt,pymod      
+matio                   ~/.pybombs/recipes/gr-recipes/matio.lwr                                       -              
+mbelib                  ~/.pybombs/recipes/gr-recipes/mbelib.lwr                                      -              
+mcpp                    ~/.pybombs/recipes/gr-recipes/mcpp.lwr                                        -              
+mpc                     ~/.pybombs/recipes/gr-recipes/mpc.lwr                                         -              
+mpfr                    ~/.pybombs/recipes/gr-recipes/mpfr.lwr                                        -              
+multi-rtl               ~/.pybombs/recipes/gr-etcetera/multi-rtl.lwr                                  -              
+networkx                ~/.pybombs/recipes/gr-recipes/networkx.lwr                                    apt            
+niusrprio               ~/.pybombs/recipes/gr-recipes/niusrprio.lwr                                   -              
+numpy                   ~/.pybombs/recipes/gr-recipes/numpy.lwr                                       apt,pymod      
+openlte                 ~/.pybombs/recipes/gr-recipes/openlte.lwr                                     -              
+osmo-fl2k               ~/.pybombs/recipes/gr-recipes/osmo-fl2k.lwr                                   -              
+osmo-sdr                ~/.pybombs/recipes/gr-recipes/osmo-sdr.lwr                                    -              
+osmo-tetra              ~/.pybombs/recipes/gr-recipes/osmo-tetra.lwr                                  -              
+pango                   ~/.pybombs/recipes/gr-recipes/pango.lwr                                       -              
+pcsclite                ~/.pybombs/recipes/gr-recipes/pcsclite.lwr                                    -              
+perl                    ~/.pybombs/recipes/gr-recipes/perl.lwr                                        apt,cmd        
+pixman                  ~/.pybombs/recipes/gr-recipes/pixman.lwr                                      apt            
+pkg-config              ~/.pybombs/recipes/gr-recipes/pkg-config.lwr                                  apt            
+pocsag-mrt              ~/.pybombs/recipes/gr-recipes/pocsag-mrt.lwr                                  -              
+protobuf                ~/.pybombs/recipes/gr-recipes/protobuf.lwr                                    -              
+pulseaudio              ~/.pybombs/recipes/gr-recipes/pulseaudio.lwr                                  apt            
+pybind11                ~/.pybombs/recipes/gr-recipes/pybind11.lwr                                    -              
+pybitarray              ~/.pybombs/recipes/gr-recipes/pybitarray.lwr                                  -              
+pycairo                 ~/.pybombs/recipes/gr-recipes/pycairo.lwr                                     pymod          
+pyconstruct             ~/.pybombs/recipes/gr-recipes/pyconstruct.lwr                                 -              
+pygobject               ~/.pybombs/recipes/gr-recipes/pygobject.lwr                                   apt            
+pygraphviz              ~/.pybombs/recipes/gr-recipes/pygraphviz.lwr                                  -              
+pygtk                   ~/.pybombs/recipes/gr-recipes/pygtk.lwr                                       apt            
+pyqt4                   ~/.pybombs/recipes/gr-recipes/pyqt4.lwr                                       -              
+pyqt4-dev-tools         ~/.pybombs/recipes/gr-recipes/pyqt4-dev-tools.lwr                             -              
+pyqt5                   ~/.pybombs/recipes/gr-recipes/pyqt5.lwr                                       apt            
+pyqwt5                  ~/.pybombs/recipes/gr-recipes/pyqwt5.lwr                                      -              
+pysstv                  ~/.pybombs/recipes/gr-recipes/pysstv.lwr                                      -              
+python                  ~/.local/lib/python3.8/site-packages/pybombs/recipes/python.lwr               apt,cmd        
+python-click-plugins    ~/.pybombs/recipes/gr-recipes/python-click-plugins.lwr                        apt            
+python-matplotlib       ~/.pybombs/recipes/gr-recipes/python-matplotlib.lwr                           apt,pymod      
+python-pyqtgraph        ~/.pybombs/recipes/gr-recipes/python-pyqtgraph.lwr                            apt,pymod      
+python-requests         ~/.local/lib/python3.8/site-packages/pybombs/recipes/python-requests.lwr      apt            
+python-scapy            ~/.pybombs/recipes/gr-etcetera/python-scapy.lwr                               -              
+python-tk               ~/.pybombs/recipes/gr-recipes/python-tk.lwr                                   apt            
+python-zmq              ~/.pybombs/recipes/gr-recipes/python-zmq.lwr                                  apt,pymod      
+pyyaml                  ~/.pybombs/recipes/gr-recipes/pyyaml.lwr                                      apt            
+qt4                     ~/.pybombs/recipes/gr-recipes/qt4.lwr                                         -              
+qt5                     ~/.pybombs/recipes/gr-recipes/qt5.lwr                                         apt            
+qwt5                    ~/.pybombs/recipes/gr-recipes/qwt5.lwr                                        -              
+qwt6                    ~/.pybombs/recipes/gr-recipes/qwt6.lwr                                        apt            
+qwtplot3d               ~/.pybombs/recipes/gr-recipes/qwtplot3d.lwr                                   -              
+rtl-sdr                 ~/.pybombs/recipes/gr-recipes/rtl-sdr.lwr                                     -              
+rtl_433                 ~/.pybombs/recipes/gr-etcetera/rtl_433.lwr                                    -              
+rtl_waterfall           ~/.pybombs/recipes/gr-etcetera/rtl_waterfall.lwr                              -              
+scikit-commpy           ~/.pybombs/recipes/gr-etcetera/scikit-commpy.lwr                              -              
+scipy                   ~/.pybombs/recipes/gr-recipes/scipy.lwr                                       apt,pymod      
+setuptools              ~/.pybombs/recipes/gr-recipes/setuptools.lwr                                  apt            
+simple_radio_astronomy  ~/.pybombs/recipes/gr-etcetera/simple_radio_astronomy.lwr                     -              
+sip                     ~/.pybombs/recipes/gr-recipes/sip.lwr                                         pymod          
+six                     ~/.pybombs/recipes/gr-recipes/six.lwr                                         apt,pymod      
+soapyairspy             ~/.pybombs/recipes/gr-recipes/soapyairspy.lwr                                 -              
+soapyairspyhf           ~/.pybombs/recipes/gr-recipes/soapyairspyhf.lwr                               -              
+soapybladerf            ~/.pybombs/recipes/gr-recipes/soapybladerf.lwr                                -              
+soapyhackrf             ~/.pybombs/recipes/gr-recipes/soapyhackrf.lwr                                 -              
+soapymultisdr           ~/.pybombs/recipes/gr-recipes/soapymultisdr.lwr                               -              
+soapyplutosdr           ~/.pybombs/recipes/gr-etcetera/soapyplutosdr.lwr                              -              
+soapyremote             ~/.pybombs/recipes/gr-recipes/soapyremote.lwr                                 -              
+soapyrtlsdr             ~/.pybombs/recipes/gr-recipes/soapyrtlsdr.lwr                                 -              
+soapysdr                ~/.pybombs/recipes/gr-recipes/soapysdr.lwr                                    -              
+soapyuhd                ~/.pybombs/recipes/gr-recipes/soapyuhd.lwr                                    -              
+sqlite                  ~/.pybombs/recipes/gr-recipes/sqlite.lwr                                      apt            
+ssl                     ~/.pybombs/recipes/gr-recipes/ssl.lwr                                         apt,pkgconfig  
+subversion              ~/.pybombs/recipes/gr-recipes/subversion.lwr                                  -              
+swig                    ~/.pybombs/recipes/gr-recipes/swig.lwr                                        apt,cmd        
+theseus-cores           ~/.pybombs/recipes/gr-etcetera/theseus-cores.lwr                              -              
+tornado                 ~/.pybombs/recipes/gr-recipes/tornado.lwr                                     -              
+twisted                 ~/.pybombs/recipes/gr-recipes/twisted.lwr                                     -              
+uhd                     ~/.pybombs/recipes/gr-recipes/uhd.lwr                                         source         
+wget                    ~/.pybombs/recipes/gr-recipes/wget.lwr                                        apt,cmd        
+wireshark               ~/.pybombs/recipes/gr-recipes/wireshark.lwr                                   -              
+wxpython                ~/.pybombs/recipes/gr-recipes/wxpython.lwr                                    -              
+x11                     ~/.pybombs/recipes/gr-recipes/x11.lwr                                         apt            
+xz                      ~/.local/lib/python3.8/site-packages/pybombs/recipes/xz.lwr                   apt,cmd        
+zeromq                  ~/.pybombs/recipes/gr-recipes/zeromq.lwr                                      apt,pkgconfig
+#+end_src
+
+
+* Installing from source
+  
+Per [[https://wiki.gnuradio.org/index.php/UbuntuInstall#Focal_Fossa_.2820.04.29_through_Hirsute_Hippo_.2821.04.29][Ubuntu install 20.04]] 
+#+begin_src
+sudo apt install git cmake g++ libboost-all-dev libgmp-dev swig python3-numpy \
+python3-mako python3-sphinx python3-lxml doxygen libfftw3-dev \
+libsdl1.2-dev libgsl-dev libqwt-qt5-dev libqt5opengl5-dev python3-pyqt5 \
+liblog4cpp5-dev libzmq3-dev python3-yaml python3-click python3-click-plugins \
+python3-zmq python3-scipy python3-gi python3-gi-cairo gir1.2-gtk-3.0 \
+libcodec2-dev libgsm1-dev
+sudo apt install pybind11-dev python3-matplotlib libsndfile1-dev
+sudo apt install libiio-dev libad9361-dev libsoapysdr-dev soapysdr-tools
+#+end_src
+
+** uhd
+
+   [[https://kb.ettus.com/Building_and_Installing_the_USRP_Open-Source_Toolchain_(UHD_and_GNU_Radio)_on_Linux][Building and Insalling USRP UHD]]
+
+   [[https://files.ettus.com/manual/page_build_guide.html][USRP UHD Build Guide]]
+   #+begin_src 
+   sudo apt-get install libboost-all-dev libusb-1.0-0-dev doxygen python3-docutils python3-mako python3-numpy python3-requests python3-ruamel.yaml python3-setuptools cmake build-essential
+   #+end_src
+   
+   #+begin_src 
+   git clone https://github.com/EttusResearch/uhd.git
+   #+end_src
+** Volk
+   #+begin_src
+    cd ~/Documents
+    git clone --recursive https://github.com/gnuradio/volk.git
+    cd volk
+    mkdir build
+    cd build
+
+    cmake -DCMAKE_INSTALL_PREFIX=/home/mg/.local -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3 ../
+    make
+    make test
+    sudo make install
+   #+end_src
+
+** gnuradio
+
+   #+begin_src 
+    cd ~/Documents
+    git clone https://github.com/gnuradio/gnuradio.git
+    cd gnuradio
+    mkdir build
+    cd build
+    cmake -DCMAKE_INSTALL_PREFIX=/home/mg/.local -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3 ../
+    make -j3
+    make test
+    make install
+    sudo ldconfig
+   #+end_src
